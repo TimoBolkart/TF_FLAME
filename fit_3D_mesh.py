@@ -96,7 +96,10 @@ def fit_3D_mesh(target_3d_mesh_fname, template_fname, tf_model_fname, weights, s
 
 def run_corresponding_mesh_fitting():
     # Path of the Tensorflow FLAME model
-    tf_model_fname = './models/tf_generic_model'
+    tf_model_fname = './models/generic_model'
+    # tf_model_fname = './models/female_model'
+    # tf_model_fname = './models/male_model'
+
     # Path of a tempalte mesh in FLAME topology
     template_fname = './data/template.ply'
 

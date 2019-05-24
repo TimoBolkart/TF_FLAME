@@ -92,7 +92,10 @@ def fit_lmk3d(target_3d_lmks, template_fname, tf_model_fname, lmk_face_idx, lmk_
 
 def run_3d_lmk_fitting():
     # Path of the Tensorflow FLAME model
-    tf_model_fname = './models/tf_generic_model'
+    tf_model_fname = './models/generic_model'
+    # tf_model_fname = './models/female_model'
+    # tf_model_fname = './models/male_model'
+
     # Path of a tempalte mesh in FLAME topology
     template_fname = './data/template.ply'
 

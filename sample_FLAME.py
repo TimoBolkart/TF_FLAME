@@ -96,7 +96,10 @@ def sample_VOCA_template(template_fname, tf_model_fname, out_mesh_fname):
 
 def draw_random_samples():
     # Path of the Tensorflow FLAME model
-    tf_model_fname = './models/tf_generic_model'
+    tf_model_fname = './models/generic_model'
+    # tf_model_fname = './models/female_model'
+    # tf_model_fname = './models/male_model'
+
     # Path of a tempalte mesh in FLAME topology
     template_fname = './data/template.ply'
     # Number of samples
@@ -106,7 +109,10 @@ def draw_random_samples():
 
 def draw_VOCA_template_sample():
     # Path of the Tensorflow FLAME model
-    tf_model_fname = './models/tf_generic_model'
+    # tf_model_fname = './models/generic_model'
+    # tf_model_fname = './models/female_model'
+    tf_model_fname = './models/male_model'
+
     # Path of a tempalte mesh in FLAME topology
     template_fname = './data/template.ply'
     # Output mesh path
