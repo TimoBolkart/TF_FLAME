@@ -96,6 +96,10 @@ python sample_FLAME.py --option sample_VOCA_template
 FLAME supports several projects such as
 * [VOCA: Voice Operated Character Animation](https://github.com/TimoBolkart/voca)
 * [RingNet: 3D Face Shape and Expression Reconstruction from an Image without 3D Supervision](https://github.com/soubhiksanyal/RingNet)
+* [Expressive Body Capture: 3D Hands, Face, and Body from a Single Image](https://github.com/vchoutas/smplify-x)
+
+FLAME is part of SMPL-X
+* [SMPL-X: A new joint 3D model of the human body, face and hands together](https://github.com/vchoutas/smplx)
 
 
 ## License
