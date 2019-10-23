@@ -15,6 +15,7 @@ More information about FLAME is available at http://flame.is.tue.mpg.de.
 For comments or questions, please email us at flame@tue.mpg.de
 '''
 
+import cv2
 import numpy as np
 import cPickle as pickle
 import tensorflow as tf
@@ -44,3 +45,19 @@ def tf_get_model_lmks(tf_model, template_mesh, lmk_face_idx, lmk_b_coords):
     """Get a differentiable landmark embedding in the FLAME surface"""
     faces = template_mesh.f[lmk_face_idx].astype(np.int32)
     return tf.einsum('ijk,ij->ik', tf.gather(tf_model, faces), tf.convert_to_tensor(lmk_b_coords))
+
+def tf_project_points(points, scale, trans):
+    '''
+    weak perspective camera
+    '''
+
+    return tf.scalar_mul(scale, tf.transpose(tf.linalg.matmul(tf.eye(num_rows=2, num_columns=3, dtype=points.dtype), points, transpose_b=True)) + trans)
+
+def visualize_landmarks(img, lmks):
+    for i, (x, y) in enumerate(lmks):
+        cv2.circle(img, (int(x), int(y)), 4, (0, 0, 255), -1)
+
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        text = '%d' % (i+1)
+        textsize = cv2.getTextSize(text, font, 1, 2)[0]
+        cv2.putText(img, text, (int(x-textsize[0]/2.0)+5, int(y)-5), font, 0.5, (0, 0, 255), 1, cv2.LINE_AA)

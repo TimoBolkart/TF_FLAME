@@ -96,19 +96,20 @@ def run_3d_lmk_fitting():
     # tf_model_fname = './models/female_model'
     # tf_model_fname = './models/male_model'
 
-    # Path of a tempalte mesh in FLAME topology
+    # Path of a template mesh in FLAME topology
     template_fname = './data/template.ply'
 
     # Path of the landamrk embedding file into the FLAME surface
-    flame_lmk_path = './data/lmk_embedding_intraface_to_flame.pkl'
+    flame_lmk_path = './data/flame_static_embedding.pkl'
     # 3D landmark file that should be fitted (landmarks must be corresponding with the defined FLAME landmarks)
-    target_lmk_path = './data/landmark_3d.pkl'
+    # see "img1_lmks_visualized.jpeg" or "see the img2_lmks_visualized.jpeg" for the order of the landmarks
+    target_lmk_path = './data/landmark_3d.npy'
 
     # Output filename
     out_mesh_fname = './results/landmark_3d.ply'
 
     lmk_face_idx, lmk_b_coords = load_embedding(flame_lmk_path)
-    lmk_3d = load_binary_pickle(target_lmk_path)
+    lmk_3d = np.load(target_lmk_path)
 
     weights = {}
     # Weight of the landmark distance term

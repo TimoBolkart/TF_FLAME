@@ -60,6 +60,12 @@ This demo introduces the different FLAME parameters (i.e. pose, shape, expressio
 python sample_FLAME.py
 ```
 
+##### Fit 2D landmarks
+
+This demo demonstrates how to fit FLAME to 2D landmarks. Corresponding 2D landmarks can for instance be automatically predicted using [2D-FAN Torch](https://github.com/1adrianb/2D-and-3D-face-alignment) or [2D-FAN Pytorch](https://github.com/1adrianb/face-alignment). 
+```
+python fit_2D_landmarks.py
+```
 
 ##### Fit 3D landmarks
 
