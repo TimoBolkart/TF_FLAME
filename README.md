@@ -8,6 +8,14 @@
 
 FLAME combines a linear identity shape space (trained from 3800 scans of human heads) with an articulated neck, jaw, and eyeballs, pose-dependent corrective blendshapes, and additional global expression blendshapes. For details please about the model, please see the [scientific publication](https://ps.is.tuebingen.mpg.de/uploads_file/attachment/attachment/400/paper.pdf) and the [supplementary video](https://youtu.be/36rPTkhiJTM).
 
+### Content
+
+This repository demonstrates how to 
+1) sample 3D face meshes, 
+2) fit the 3D model to 2D landmarks, 
+3) fit the 3D model to 3D landmarks, 
+4) fit the 3D model to registered 3D meshes, and 
+5) how to generate templates for speech-driven facial animation ([VOCA](https://github.com/TimoBolkart/voca)).
 
 ### Set-up
 
