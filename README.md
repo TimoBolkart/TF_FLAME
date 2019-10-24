@@ -32,9 +32,17 @@ $ git clone https://github.com/TimoBolkart/TF_FLAME.git
 ```
 
 Set up virtual environment:
+
+Python2:
 ```
 $ mkdir <your_home_dir>/.virtualenvs
 $ virtualenv --no-site-packages <your_home_dir>/.virtualenvs/flame
+```
+
+Python3:
+```
+$ mkdir <your_home_dir>/.virtualenvs
+python3 -m venv <your_home_dir>/.virtualenvs/flame
 ```
 
 Activate virtual environment:
