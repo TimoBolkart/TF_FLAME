@@ -22,7 +22,7 @@ import numpy as np
 import tensorflow as tf
 from psbody.mesh import Mesh
 from psbody.mesh.meshviewer import MeshViewer
-from utils.landmarks import load_binary_pickle, load_embedding, tf_get_model_lmks, create_lmk_spheres, tf_project_points
+from utils.landmarks import load_embedding, tf_get_model_lmks, create_lmk_spheres, tf_project_points
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
 
@@ -110,8 +110,6 @@ def fit_lmk2d(target_img, target_2d_lmks, template_fname, tf_model_fname, lmk_fa
         optimizer.minimize(session, fetches=[tf.constant(target_img), tf.constant(target_2d_lmks), lmks_proj_2d,
                                              lmk_dist, shape_reg, exp_reg, neck_pose_reg, jaw_pose_reg, eyeballs_pose_reg], loss_callback=on_step)
 
-        # Mesh(session.run(tf_model), template_mesh.f).show()
-
         print('Fitting done')
         return Mesh(session.run(tf_model), template_mesh.f)
 
@@ -130,17 +128,17 @@ def run_2d_lmk_fitting():
     flame_lmk_path = './data/flame_static_embedding.pkl'
 
     # Target image (used for visualization only)
-    # target_img_path = './data/img1.jpeg'    # example 1
-    target_img_path = './data/img2.jpeg'  # example 2
+    target_img_path = './data/img1.jpeg'    # example 1
+    # target_img_path = './data/img2.jpeg'  # example 2
 
     # 2D landmark file that should be fitted (landmarks must be corresponding with the defined FLAME landmarks)
     # see "img1_lmks_visualized.jpeg" or "see the img2_lmks_visualized.jpeg" for the order of the landmarks
-    # target_lmk_path = './data/img1_lmks.npy'    # example 1
-    target_lmk_path = './data/img2_lmks.npy'  # example 2
+    target_lmk_path = './data/img1_lmks.npy'    # example 1
+    # target_lmk_path = './data/img2_lmks.npy'  # example 2
 
     # Output filename
-    # out_mesh_fname = './results/fitting_img1.ply'    # example 1
-    out_mesh_fname = './results/fitting_img2.ply'  # example 2
+    out_mesh_fname = './results/fitting_img1.ply'    # example 1
+    # out_mesh_fname = './results/fitting_img2.ply'  # example 2
 
     lmk_face_idx, lmk_b_coords = load_embedding(flame_lmk_path)
 

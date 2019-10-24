@@ -17,6 +17,7 @@ For comments or questions, please email us at flame@tue.mpg.de
 
 
 import os
+import six
 import argparse
 import numpy as np
 import tensorflow as tf
@@ -64,7 +65,7 @@ def sample_FLAME(template_fname, tf_model_fname, num_samples):
             session.run([assign_trans, assign_rot, assign_pose, assign_shape, assign_exp])
 
             mv.set_dynamic_meshes([Mesh(session.run(tf_model), template_mesh.f)], blocking=True)
-            raw_input('Press key to continue')
+            six.moves.input('Press key to continue')
 
 def sample_VOCA_template(template_fname, tf_model_fname, out_mesh_fname):
     '''

@@ -17,6 +17,7 @@ For comments or questions, please email us at flame@tue.mpg.de
 
 
 import os
+import six
 import numpy as np
 import tensorflow as tf
 from psbody.mesh import Mesh
@@ -89,7 +90,7 @@ def fit_3D_mesh(target_3d_mesh_fname, template_fname, tf_model_fname, weights, s
             fitting_mesh.set_vertex_colors('light sky blue')
 
             mv.set_static_meshes([target_mesh, fitting_mesh])
-            raw_input('Press key to continue')
+            six.moves.input('Press key to continue')
 
         return Mesh(session.run(tf_model), template_mesh.f)
 

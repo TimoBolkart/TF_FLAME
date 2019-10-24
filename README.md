@@ -11,15 +11,15 @@ FLAME combines a linear identity shape space (trained from 3800 scans of human h
 ### Content
 
 This repository demonstrates how to 
-1) sample 3D face meshes, 
-2) fit the 3D model to 2D landmarks, 
-3) fit the 3D model to 3D landmarks, 
-4) fit the 3D model to registered 3D meshes, and 
-5) how to generate templates for speech-driven facial animation ([VOCA](https://github.com/TimoBolkart/voca)).
+1) sample 3D face meshes 
+2) fit the 3D model to 2D landmarks
+3) fit the 3D model to 3D landmarks 
+4) fit the 3D model to registered 3D meshes
+5) how to generate templates for speech-driven facial animation ([VOCA](https://github.com/TimoBolkart/voca))
 
 ### Set-up
 
-The code uses Python 2.7 and it was tested on Tensorflow 1.12.0.
+The has been tested with Python2.7 and Python3.6, using Tensorflow 1.14.0.
 
 Install pip and virtualenv
 ```
@@ -70,7 +70,7 @@ python sample_FLAME.py
 
 ##### Fit 2D landmarks
 
-This demo demonstrates how to fit FLAME to 2D landmarks. Corresponding 2D landmarks can for instance be automatically predicted using [2D-FAN Torch](https://github.com/1adrianb/2D-and-3D-face-alignment) or [2D-FAN Pytorch](https://github.com/1adrianb/face-alignment). 
+This demo demonstrates how to fit FLAME to 2D landmarks. Corresponding 2D landmarks can for instance be automatically predicted using [2D-FAN Torch](https://github.com/1adrianb/2D-and-3D-face-alignment) or [2D-FAN Pytorch](https://github.com/1adrianb/face-alignment).
 ```
 python fit_2D_landmarks.py
 ```

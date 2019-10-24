@@ -17,11 +17,12 @@ For comments or questions, please email us at flame@tue.mpg.de
 
 
 import os
+import six
 import numpy as np
 import tensorflow as tf
 from psbody.mesh import Mesh
 from psbody.mesh.meshviewer import MeshViewer
-from utils.landmarks import load_binary_pickle, load_embedding, tf_get_model_lmks, create_lmk_spheres
+from utils.landmarks import load_embedding, tf_get_model_lmks, create_lmk_spheres
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
 def fit_lmk3d(target_3d_lmks, template_fname, tf_model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=True):
@@ -85,7 +86,7 @@ def fit_lmk3d(target_3d_lmks, template_fname, tf_model_fname, lmk_face_idx, lmk_
             mv = MeshViewer()
             mv.set_static_meshes(create_lmk_spheres(target_3d_lmks, 0.001, [255.0, 0.0, 0.0]))
             mv.set_dynamic_meshes([Mesh(session.run(tf_model), template_mesh.f)] + create_lmk_spheres(session.run(lmks), 0.001, [0.0, 0.0, 255.0]), blocking=True)
-            raw_input('Press key to continue')
+            six.moves.input('Press key to continue')
 
         return Mesh(session.run(tf_model), template_mesh.f)
 

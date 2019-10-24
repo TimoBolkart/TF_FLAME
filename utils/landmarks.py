@@ -16,14 +16,18 @@ For comments or questions, please email us at flame@tue.mpg.de
 '''
 
 import cv2
+import sys
+import pickle
 import numpy as np
-import cPickle as pickle
 import tensorflow as tf
 from psbody.mesh.sphere import Sphere
 
 def load_binary_pickle(filepath):
-    with open( filepath, 'rb' ) as f:
-        data = pickle.load(f)
+    with open(filepath, 'rb') as f:
+        if sys.version_info >= (3, 0):
+            data = pickle.load(f, encoding='latin1')
+        else:
+            data = pickle.load(f)
     return data
 
 def create_lmk_spheres(lmks, radius, color=[255.0, 0.0, 0.0]):
