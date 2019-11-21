@@ -68,16 +68,18 @@ def fit_3D_mesh(target_3d_mesh_fname, template_fname, tf_model_fname, weights, s
         # Optimize global transformation first
         vars = [tf_trans, tf_rot]
         loss = mesh_dist
-        optimizer = scipy_pt(loss=loss, var_list=vars, method='L-BFGS-B', options={'disp': 1})
+        # optimizer = scipy_pt(loss=loss, var_list=vars, method='L-BFGS-B', options={'disp': 1})
+        optimizer = scipy_pt(loss=loss, var_list=vars, method='BFGS', options={'disp': 1})
         print('Optimize rigid transformation')
         optimizer.minimize(session)
 
         # Optimize for the model parameters
         vars = [tf_trans, tf_rot, tf_pose, tf_shape, tf_exp]
-        loss = mesh_dist + weights['shape'] * shape_reg + weights['expr'] * exp_reg + \
+        loss = weights['data'] * mesh_dist + weights['shape'] * shape_reg + weights['expr'] * exp_reg + \
                weights['neck_pose'] * neck_pose_reg + weights['jaw_pose'] * jaw_pose_reg + weights['eyeballs_pose'] * eyeballs_pose_reg
 
-        optimizer = scipy_pt(loss=loss, var_list=vars, method='L-BFGS-B', options={'disp': 1})
+        # optimizer = scipy_pt(loss=loss, var_list=vars, method='L-BFGS-B', options={'disp': 1})
+        optimizer = scipy_pt(loss=loss, var_list=vars, method='BFGS', options={'disp': 1})
         print('Optimize model parameters')
         optimizer.minimize(session)
 
@@ -101,7 +103,7 @@ def run_corresponding_mesh_fitting():
     # tf_model_fname = './models/female_model'
     # tf_model_fname = './models/male_model'
 
-    # Path of a tempalte mesh in FLAME topology
+    # Path of a template mesh in FLAME topology
     template_fname = './data/template.ply'
 
     # target 3D mesh in dense vertex-correspondence to the model
@@ -111,15 +113,17 @@ def run_corresponding_mesh_fitting():
     out_mesh_fname = './results/mesh_fitting.ply'
 
     weights = {}
-    # Weight of the shape regularizer
+    # Weight of the data term
+    weights['data'] = 1000.0
+    # Weight of the shape regularizer (the lower, the less shape is constrained)
     weights['shape'] = 1e-4
-    # Weight of the expression regularizer
+    # Weight of the expression regularizer (the lower, the less expression is constrained)
     weights['expr']  = 1e-4
-    # Weight of the neck pose (i.e. neck rotationh around the neck) regularizer
+    # Weight of the neck pose (i.e. neck rotationh around the neck) regularizer (the lower, the less neck pose is constrained)
     weights['neck_pose'] = 1e-4
-    # Weight of the jaw pose (i.e. jaw rotation for opening the mouth) regularizer
+    # Weight of the jaw pose (i.e. jaw rotation for opening the mouth) regularizer (the lower, the less jaw pose is constrained)
     weights['jaw_pose'] = 1e-4
-    # Weight of the eyeball pose (i.e. eyeball rotations) regularizer
+    # Weight of the eyeball pose (i.e. eyeball rotations) regularizer (the lower, the less eyeballs pose is constrained)
     weights['eyeballs_pose'] = 1e-4
     # Show landmark fitting (default: red = target landmarks, blue = fitting landmarks)
     show_fitting = True
