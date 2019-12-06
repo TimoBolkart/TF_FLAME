@@ -55,9 +55,12 @@ The requirements (including tensorflow) can be installed using:
 ```
 pip install -r requirements.txt
 ```
-
 Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/mesh) within the virtual environment.
 
+The visualization uses OpenGL which can be installed using:
+```
+sudo apt-get install python-opengl
+```
 
 ### Data
 
