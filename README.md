@@ -61,7 +61,7 @@ Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/m
 
 ### Data
 
-Download Tensorflow FLAME model from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/).<br/>
+Download Tensorflow FLAME model from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data.<br/>
 
 
 ### Demo
