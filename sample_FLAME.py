@@ -94,7 +94,6 @@ def sample_VOCA_template(template_fname, tf_model_fname, out_mesh_fname):
 
         Mesh(session.run(tf_model), template_mesh.f).write_ply(out_mesh_fname)
 
-
 def draw_random_samples():
     # Path of the Tensorflow FLAME model
     tf_model_fname = './models/generic_model'
@@ -125,7 +124,7 @@ def draw_VOCA_template_sample():
     sample_VOCA_template(template_fname, tf_model_fname, out_mesh_fname)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Voice operated character animation')
+    parser = argparse.ArgumentParser(description='Sample FLAME shape space')
     parser.add_argument('--option', default='random_sample', help='sample random FLAME meshes or VOCA templates')
 
     args = parser.parse_args()
