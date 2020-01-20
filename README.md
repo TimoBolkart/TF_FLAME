@@ -22,8 +22,15 @@ This repository demonstrates how to
 The has been tested with Python2.7 and Python3.6, using Tensorflow 1.14.0.
 
 Install pip and virtualenv
+
+Python2:
 ```
 sudo apt-get install python-pip python-virtualenv
+```
+
+Python3:
+```
+sudo apt-get install python3-pip python3-venv
 ```
 
 Clone the git project:
