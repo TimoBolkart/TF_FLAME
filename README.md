@@ -58,6 +58,11 @@ $ cd TF_FLAME
 $ source <your_home_dir>/flame/bin/activate
 ```
 
+Make sure your pip version is up-to-date:
+```
+pip install -U pip
+```
+
 The requirements (including tensorflow) can be installed using:
 ```
 pip install -r requirements.txt
