@@ -19,16 +19,10 @@ This repository demonstrates how to
 
 ### Set-up
 
-The has been tested with Python2.7 and Python3.6, using Tensorflow 1.14.0.
+The has been tested with Python3.6, using Tensorflow 1.14.0.
 
 Install pip and virtualenv
 
-Python2:
-```
-sudo apt-get install python-pip python-virtualenv
-```
-
-Python3:
 ```
 sudo apt-get install python3-pip python3-venv
 ```
@@ -39,12 +33,6 @@ $ git clone https://github.com/TimoBolkart/TF_FLAME.git
 ```
 
 Set up virtual environment:
-
-Python2:
-```
-$ mkdir <your_home_dir>/.virtualenvs
-$ virtualenv --no-site-packages <your_home_dir>/.virtualenvs/flame
-```
 
 Python3:
 ```
@@ -67,7 +55,7 @@ The requirements (including tensorflow) can be installed using:
 ```
 pip install -r requirements.txt
 ```
-Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/mesh) within the virtual environment. (For Python 2.7 install [MPI-IS/mesh_python27](https://github.com/TimoBolkart/mesh)).
+Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/mesh) within the virtual environment.
 
 The visualization uses OpenGL which can be installed using:
 ```
