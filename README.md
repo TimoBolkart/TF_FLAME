@@ -33,8 +33,6 @@ $ git clone https://github.com/TimoBolkart/TF_FLAME.git
 ```
 
 Set up virtual environment:
-
-Python3:
 ```
 $ mkdir <your_home_dir>/.virtualenvs
 $ python3 -m venv <your_home_dir>/.virtualenvs/flame
