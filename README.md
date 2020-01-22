@@ -79,7 +79,7 @@ python sample_FLAME.py
 
 ##### Fit 2D landmarks
 
-This demo demonstrates how to fit FLAME to 2D landmarks. Corresponding 2D landmarks can for instance be automatically predicted using [2D-FAN Torch](https://github.com/1adrianb/2D-and-3D-face-alignment) or [2D-FAN Pytorch](https://github.com/1adrianb/face-alignment).  
+This demo demonstrates how to fit FLAME to 2D landmarks. Corresponding 2D landmarks can for instance be automatically predicted using [2D-FAN Torch](https://github.com/1adrianb/2D-and-3D-face-alignment) or [2D-FAN Pytorch](https://github.com/1adrianb/face-alignment). (The test images are taken from CelebA-HQ) 
 ```
 python fit_2D_landmarks.py --tf_model_fname './models/female_model' --template_fname './data/template.ply' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00088.jpeg' --target_lmk_path './data/imgHQ00088_lmks.npy' --out_path './results'
 python fit_2D_landmarks.py --tf_model_fname './models/female_model' --template_fname './data/template.ply' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00095.jpeg' --target_lmk_path './data/imgHQ00095_lmks.npy' --out_path './results'
@@ -90,7 +90,7 @@ python fit_2D_landmarks.py --tf_model_fname './models/female_model' --template_f
 
 ##### Create textured mesh
 
-This demo demonstrates how to create a textured mesh in FLAME topology by projecting an image onto the fitted FLAME mesh (i.e. obtained by fitting FLAME to 2D landmarks). 
+This demo demonstrates how to create a textured mesh in FLAME topology by projecting an image onto the fitted FLAME mesh (i.e. obtained by fitting FLAME to 2D landmarks). (The test images are taken from CelebA-HQ)
 ```
 python build_texture_from_image.py --source_img './data/imgHQ00088.jpeg' --target_mesh './results/imgHQ00088.obj' --target_scale './results/imgHQ00088_scale.npy' --texture_mapping './data/texture_data.npy' --out_path './results'
 python build_texture_from_image.py --source_img './data/imgHQ00095.jpeg' --target_mesh './results/imgHQ00095.obj' --target_scale './results/imgHQ00095_scale.npy' --texture_mapping './data/texture_data.npy' --out_path './results'
