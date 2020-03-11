@@ -44,16 +44,17 @@ $ cd TF_FLAME
 $ source <your_home_dir>/flame/bin/activate
 ```
 
+Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/mesh) within the virtual environment.
+
 Make sure your pip version is up-to-date:
 ```
 pip install -U pip
 ```
 
-The requirements (including tensorflow) can be installed using:
+Other requirements (including tensorflow) can be installed using:
 ```
 pip install -r requirements.txt
 ```
-Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/mesh) within the virtual environment.
 
 The visualization uses OpenGL which can be installed using:
 ```

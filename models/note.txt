@@ -1,2 +1,3 @@
-note: please put the downloaded FLAME Tensorflow model files here
-
+Note: please put the downloaded FLAME models (female_model.pkl, male_model.pkl, generic_model.pkl) files here.
+You can download the models from http://flame.is.tue.mpg.de/.
+In order to get access to the model, you need to sign up and agree to the model license.
