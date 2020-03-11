@@ -62,7 +62,7 @@ sudo apt-get install python-opengl
 
 ### Data
 
-Download Tensorflow FLAME model from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data.<br/>
+Download the FLAME model from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data.<br/>
 
 
 ### Demo
@@ -155,4 +155,6 @@ When using this code in a scientific publication, please cite
 
 ## Acknowledgement
 
+The Tensorflow implementation used in this project is adapted from [HMR](https://github.com/akanazawa/hmr). We thank Angjoo Kanazawa for making this code available.
 We thank Ahmed Osman for support with Tensorflow.
+

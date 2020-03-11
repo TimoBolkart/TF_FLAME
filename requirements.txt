@@ -1,7 +1,8 @@
-numpy
-scipy
+numpy==1.16.4
+scipy==1.2.2
 tensorflow-gpu==1.14.0
 ipython
 opencv-python==4.1.1.26
 pyrender==0.1.33
 trimesh==3.5.15
+chumpy==0.69

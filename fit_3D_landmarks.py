@@ -23,14 +23,16 @@ import tensorflow as tf
 from psbody.mesh import Mesh
 from psbody.mesh.meshviewer import MeshViewer
 from utils.landmarks import load_embedding, tf_get_model_lmks, create_lmk_spheres
+
+from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
-def fit_lmk3d(target_3d_lmks, template_fname, tf_model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=True):
+def fit_lmk3d(target_3d_lmks, template_fname, model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=True):
     '''
     Fit FLAME to 3D landmarks
     :param target_3d_lmks:      target 3D landmarks provided as (num_lmks x 3) matrix
     :param template_fname:      template mesh in FLAME topology (only the face information are used)
-    :param tf_model_fname:      saved Tensorflow FLAME model
+    :param model_fname:      saved Tensorflow FLAME model
     :param lmk_face_idx:        face indices of the landmark embedding in the FLAME topology
     :param lmk_b_coords:        barycentric coordinates of the landmark embedding in the FLAME topology
                                 (i.e. weighting of the three vertices for the trinagle, the landmark is embedded in
@@ -39,21 +41,18 @@ def fit_lmk3d(target_3d_lmks, template_fname, tf_model_fname, lmk_face_idx, lmk_
     '''
 
     template_mesh = Mesh(filename=template_fname)
-    saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
 
-    graph = tf.get_default_graph()
-    tf_model = graph.get_tensor_by_name(u'vertices:0')
-
+    tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
+    tf_rot = tf.Variable(np.zeros((1,3)), name="pose", dtype=tf.float64, trainable=True)
+    tf_pose = tf.Variable(np.zeros((1,12)), name="pose", dtype=tf.float64, trainable=True)
+    tf_shape = tf.Variable(np.zeros((1,300)), name="shape", dtype=tf.float64, trainable=True)
+    tf_exp = tf.Variable(np.zeros((1,100)), name="expression", dtype=tf.float64, trainable=True)
+    smpl = SMPL(model_fname)
+    tf_model = tf.squeeze(smpl(tf_trans,
+                               tf.concat((tf_shape, tf_exp), axis=-1),
+                               tf.concat((tf_rot, tf_pose), axis=-1)))
     with tf.Session() as session:
-        saver.restore(session, tf_model_fname)
-
-        # Workaround as existing tf.Variable cannot be retrieved back with tf.get_variable
-        # tf_v_template = [x for x in tf.trainable_variables() if 'v_template' in x.name][0]
-        tf_trans = [x for x in tf.trainable_variables() if 'trans' in x.name][0]
-        tf_rot = [x for x in tf.trainable_variables() if 'rot' in x.name][0]
-        tf_pose = [x for x in tf.trainable_variables() if 'pose' in x.name][0]
-        tf_shape = [x for x in tf.trainable_variables() if 'shape' in x.name][0]
-        tf_exp = [x for x in tf.trainable_variables() if 'exp' in x.name][0]
+        session.run(tf.global_variables_initializer())
 
         lmks = tf_get_model_lmks(tf_model, template_mesh, lmk_face_idx, lmk_b_coords)
         lmk_dist = tf.reduce_sum(tf.square(1000 * tf.subtract(lmks, target_3d_lmks)))
@@ -93,9 +92,9 @@ def fit_lmk3d(target_3d_lmks, template_fname, tf_model_fname, lmk_face_idx, lmk_
 
 def run_3d_lmk_fitting():
     # Path of the Tensorflow FLAME model
-    tf_model_fname = './models/generic_model'
-    # tf_model_fname = './models/female_model'
-    # tf_model_fname = './models/male_model'
+    model_fname = './models/generic_model.pkl'
+    # model_fname = './models/female_model.pkl'
+    # model_fname = './models/male_model.pkl'
 
     # Path of a template mesh in FLAME topology
     template_fname = './data/template.ply'
@@ -128,7 +127,7 @@ def run_3d_lmk_fitting():
     # Show landmark fitting (default: red = target landmarks, blue = fitting landmarks)
     show_fitting = True
 
-    result_mesh = fit_lmk3d(lmk_3d, template_fname, tf_model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=show_fitting)
+    result_mesh = fit_lmk3d(lmk_3d, template_fname, model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=show_fitting)
 
     if not os.path.exists(os.path.dirname(out_mesh_fname)):
         os.makedirs(os.path.dirname(out_mesh_fname))

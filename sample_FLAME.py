@@ -24,9 +24,11 @@ import tensorflow as tf
 from psbody.mesh import Mesh
 from psbody.mesh.meshviewer import MeshViewer
 from utils.landmarks import load_binary_pickle, load_embedding, tf_get_model_lmks, create_lmk_spheres
+
+from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
-def sample_FLAME(template_fname, tf_model_fname, num_samples):
+def sample_FLAME(template_fname, model_fname, num_samples):
     '''
     Sample the FLAME model to demonstrate how to vary the model parameters.FLAME has parameters to
         - model identity-dependent shape variations (paramters: shape),
@@ -35,83 +37,85 @@ def sample_FLAME(template_fname, tf_model_fname, num_samples):
         - global translation (paramters: trans)
         - global rotation (paramters: rot)
     :param template_fname:      template mesh in FLAME topology (only the face information are used)
-    :param tf_model_fname:      saved Tensorflow FLAME model
+    :param model_fname:         saved FLAME model
     '''
 
     template_mesh = Mesh(filename=template_fname)
-    saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
 
-    graph = tf.get_default_graph()
-    tf_model = graph.get_tensor_by_name(u'vertices:0')
+    tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
+    tf_rot = tf.Variable(np.zeros((1,3)), name="pose", dtype=tf.float64, trainable=True)
+    tf_pose = tf.Variable(np.zeros((1,12)), name="pose", dtype=tf.float64, trainable=True)
+    tf_shape = tf.Variable(np.zeros((1,300)), name="shape", dtype=tf.float64, trainable=True)
+    tf_exp = tf.Variable(np.zeros((1,100)), name="expression", dtype=tf.float64, trainable=True)
+    smpl = SMPL(model_fname)
+    tf_model = tf.squeeze(smpl(tf_trans,
+                               tf.concat((tf_shape, tf_exp), axis=-1),
+                               tf.concat((tf_rot, tf_pose), axis=-1)))
 
     with tf.Session() as session:
-        saver.restore(session, tf_model_fname)
-
-        # Workaround as existing tf.Variable cannot be retrieved back with tf.get_variable
-        tf_trans = [x for x in tf.trainable_variables() if 'trans' in x.name][0]
-        tf_rot = [x for x in tf.trainable_variables() if 'rot' in x.name][0]
-        tf_pose = [x for x in tf.trainable_variables() if 'pose' in x.name][0]
-        tf_shape = [x for x in tf.trainable_variables() if 'shape' in x.name][0]
-        tf_exp = [x for x in tf.trainable_variables() if 'exp' in x.name][0]
+        session.run(tf.global_variables_initializer())
 
         mv = MeshViewer()
 
         for i in range(num_samples):
-            assign_trans = tf.assign(tf_trans, np.random.randn(3))
-            assign_rot = tf.assign(tf_rot, np.random.randn(3) * 0.03)
-            assign_pose = tf.assign(tf_pose, np.random.randn(12) * 0.03)
-            assign_shape = tf.assign(tf_shape, np.random.randn(300) * 1.0)
-            assign_exp = tf.assign(tf_exp, np.random.randn(100) * 0.5)
+            assign_trans = tf.assign(tf_trans, np.random.randn(3)[np.newaxis,:])
+            assign_rot = tf.assign(tf_rot, np.random.randn(3)[np.newaxis,:] * 0.03)
+            assign_pose = tf.assign(tf_pose, np.random.randn(12)[np.newaxis,:] * 0.03)
+            assign_shape = tf.assign(tf_shape, np.random.randn(300)[np.newaxis,:] * 1.0)
+            assign_exp = tf.assign(tf_exp, np.random.randn(100)[np.newaxis,:] * 0.5)
             session.run([assign_trans, assign_rot, assign_pose, assign_shape, assign_exp])
 
             mv.set_dynamic_meshes([Mesh(session.run(tf_model), template_mesh.f)], blocking=True)
             six.moves.input('Press key to continue')
 
-def sample_VOCA_template(template_fname, tf_model_fname, out_mesh_fname):
+def sample_VOCA_template(template_fname, model_fname, out_mesh_fname):
     '''
     VOCA animates static templates in FLAME topology. Such templates can be obtained by sampling the FLAME shape space.
     This function randomly samples the FLAME identity shape space to generate new templates.
     :param template_fname:  template mesh in FLAME topology (only the face information are used)
-    :param tf_model_fname:  saved Tensorflow FLAME model
+    :param model_fname:     saved FLAME model
     :param out_mesh_fname:  filename of the VOCA template
     :return:
     '''
 
     template_mesh = Mesh(filename=template_fname)
-    saver = tf.train.import_meta_graph(tf_model_fname + '.meta')
 
-    graph = tf.get_default_graph()
-    tf_model = graph.get_tensor_by_name(u'vertices:0')
+    tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
+    tf_rot = tf.Variable(np.zeros((1,3)), name="pose", dtype=tf.float64, trainable=True)
+    tf_pose = tf.Variable(np.zeros((1,12)), name="pose", dtype=tf.float64, trainable=True)
+    tf_shape = tf.Variable(np.zeros((1,300)), name="shape", dtype=tf.float64, trainable=True)
+    tf_exp = tf.Variable(np.zeros((1,100)), name="expression", dtype=tf.float64, trainable=True)
+    smpl = SMPL(model_fname)
+    tf_model = tf.squeeze(smpl(tf_trans,
+                               tf.concat((tf_shape, tf_exp), axis=-1),
+                               tf.concat((tf_rot, tf_pose), axis=-1)))
 
     with tf.Session() as session:
-        saver.restore(session, tf_model_fname)
+        session.run(tf.global_variables_initializer())
 
-        # Workaround as existing tf.Variable cannot be retrieved back with tf.get_variable
-        tf_shape = [x for x in tf.trainable_variables() if 'shape' in x.name][0]
-
-        assign_shape = tf.assign(tf_shape, np.hstack((np.random.randn(100), np.zeros(200))))
+        assign_shape = tf.assign(tf_shape, np.hstack((np.random.randn(100), np.zeros(200)))[np.newaxis,:])
         session.run([assign_shape])
 
         Mesh(session.run(tf_model), template_mesh.f).write_ply(out_mesh_fname)
 
 def draw_random_samples():
     # Path of the Tensorflow FLAME model
-    tf_model_fname = './models/generic_model'
-    # tf_model_fname = './models/female_model'
-    # tf_model_fname = './models/male_model'
+    model_fname = './models/generic_model.pkl'
+    # model_fname = './models/female_model.pkl'
+    # model_fname = './models/male_model.pkl'
 
     # Path of a tempalte mesh in FLAME topology
     template_fname = './data/template.ply'
     # Number of samples
     num_samples = 10
 
-    sample_FLAME(template_fname, tf_model_fname, num_samples)
+    sample_FLAME(template_fname, model_fname, num_samples)
 
 def draw_VOCA_template_sample():
     # Path of the Tensorflow FLAME model
-    # tf_model_fname = './models/generic_model'
-    # tf_model_fname = './models/female_model'
-    tf_model_fname = './models/male_model'
+    model_fname = './models/generic_model.pkl'
+    # model_fname = './models/female_model.pkl'
+    # model_fname = './models/male_model.pkl'
 
     # Path of a tempalte mesh in FLAME topology
     template_fname = './data/template.ply'
@@ -121,11 +125,11 @@ def draw_VOCA_template_sample():
     if not os.path.exists(os.path.dirname(out_mesh_fname)):
         os.makedirs(os.path.dirname(out_mesh_fname))
 
-    sample_VOCA_template(template_fname, tf_model_fname, out_mesh_fname)
+    sample_VOCA_template(template_fname, model_fname, out_mesh_fname)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Sample FLAME shape space')
-    parser.add_argument('--option', default='random_sample', help='sample random FLAME meshes or VOCA templates')
+    parser.add_argument('--option', default='sample_FLAME', help='sample random FLAME meshes or VOCA templates')
 
     args = parser.parse_args()
     option = args.option
