@@ -45,9 +45,9 @@ def load_embedding( file_path ):
     lmk_b_coords = lmk_indexes_dict[ 'lmk_b_coords' ]
     return lmk_face_idx, lmk_b_coords
 
-def tf_get_model_lmks(tf_model, template_mesh, lmk_face_idx, lmk_b_coords):
+def tf_get_model_lmks(tf_model, f, lmk_face_idx, lmk_b_coords):
     """Get a differentiable landmark embedding in the FLAME surface"""
-    faces = template_mesh.f[lmk_face_idx].astype(np.int32)
+    faces = f[lmk_face_idx].astype(np.int32)
     return tf.einsum('ijk,ij->ik', tf.gather(tf_model, faces), tf.convert_to_tensor(lmk_b_coords))
 
 def tf_project_points(points, scale, trans):

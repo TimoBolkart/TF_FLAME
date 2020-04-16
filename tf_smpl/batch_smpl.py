@@ -36,6 +36,7 @@ class SMPL(object):
                                       name='v_template',
                                       dtype=self.dtype,
                                       trainable=False)
+        self.f = dd['f']
 
         # Size of mesh [Number of vertices, 3]
         self.size = [self.v_template.shape[0].value, 3]
@@ -67,6 +68,7 @@ class SMPL(object):
                                    name='lbs_weights',
                                    dtype=self.dtype,
                                    trainable=False)
+
 
     def __call__(self, trans, beta, theta, name=''):
         """

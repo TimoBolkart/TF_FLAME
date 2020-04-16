@@ -63,7 +63,7 @@ sudo apt-get install python-opengl
 
 ### Data
 
-Download the FLAME model from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data.<br/>
+Download the FLAME model and the texture space from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data.<br/>
 
 
 ### Demo
@@ -75,17 +75,17 @@ We provide demos to i) draw random samples from FLAME to demonstrate how to edit
 
 This demo introduces the different FLAME parameters (i.e. pose, shape, expression, and global transformation) of the FLAME model by generating random sample meshes. Please note that this does not demonstrate how to get realistic 3D face samples from the model.
 ```
-python sample_FLAME.py
+python sample_FLAME.py --option sample_FLAME --model_fname './models/generic_model.pkl' --num_samples 5 --out_path './FLAME_samples'
 ```
 
 ##### Fit 2D landmarks
 
 This demo demonstrates how to fit FLAME to 2D landmarks. Corresponding 2D landmarks can for instance be automatically predicted using [2D-FAN Torch](https://github.com/1adrianb/2D-and-3D-face-alignment) or [2D-FAN Pytorch](https://github.com/1adrianb/face-alignment). (The test images are taken from CelebA-HQ) 
 ```
-python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --template_fname './data/template.ply' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00088.jpeg' --target_lmk_path './data/imgHQ00088_lmks.npy' --out_path './results'
-python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --template_fname './data/template.ply' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00095.jpeg' --target_lmk_path './data/imgHQ00095_lmks.npy' --out_path './results'
-python fit_2D_landmarks.py --model_fname './models/male_model.pkl' --template_fname './data/template.ply' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00039.jpeg' --target_lmk_path './data/imgHQ00039_lmks.npy' --out_path './results'
-python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --template_fname './data/template.ply' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ01148.jpeg' --target_lmk_path './data/imgHQ01148_lmks.npy' --out_path './results'
+python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00088.jpeg' --target_lmk_path './data/imgHQ00088_lmks.npy' --out_path './results'
+python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00095.jpeg' --target_lmk_path './data/imgHQ00095_lmks.npy' --out_path './results'
+python fit_2D_landmarks.py --model_fname './models/male_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ00039.jpeg' --target_lmk_path './data/imgHQ00039_lmks.npy' --out_path './results'
+python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ01148.jpeg' --target_lmk_path './data/imgHQ01148_lmks.npy' --out_path './results'
 
 ```
 
@@ -114,13 +114,20 @@ python fit_3D_mesh.py
 ```
 Note that this demo to date does not support registering arbitrary 3D face scans. This requires replacing the vertex loss function by some differentiable scan-to-mesh or mesh-to-scan distance.
 
+##### Sample texture space
+
+This demo generates FLAME meshes with textures randomly sampled from the texture space.
+```
+python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/FLAME_texture.npz' --num_samples 5 --out_path './texture_samples'
+```
 
 ##### Generate VOCA template
 
 [VOCA](https://github.com/TimoBolkart/voca) is a framework to animate a static face mesh in FLAME topology from speech. This demo samples the FLAME identity space to generate new templates that can then be animated with VOCA. 
 ```
-python sample_FLAME.py --option sample_VOCA_template
+python sample_FLAME.py --option sample_VOCA_template --model_fname './models/generic_model.pkl' --num_samples 5 --out_path './FLAME_samples'
 ```
+
 
 
 ### Supported projects

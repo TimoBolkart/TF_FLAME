@@ -17,6 +17,7 @@ For comments or questions, please email us at flame@tue.mpg.de
 
 
 import os
+import cv2
 import six
 import argparse
 import numpy as np
@@ -28,7 +29,7 @@ from utils.landmarks import load_binary_pickle, load_embedding, tf_get_model_lmk
 from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
-def sample_FLAME(model_fname, num_samples, out_path, sample_VOCA_template=False):
+def sample_texture(model_fname, texture_fname, num_samples, out_path):
     '''
     Sample the FLAME model to demonstrate how to vary the model parameters.FLAME has parameters to
         - model identity-dependent shape variations (paramters: shape),
@@ -36,10 +37,9 @@ def sample_FLAME(model_fname, num_samples, out_path, sample_VOCA_template=False)
         - model facial expressions, i.e. all expression motion that does not involve opening the mouth (paramters: exp)
         - global translation (paramters: trans)
         - global rotation (paramters: rot)
-    :param model_fname              saved FLAME model
-    :param num_samples              number of samples
-    :param out_path                 output path to save the generated templates (no templates are saved if path is empty)
-    :param sample_VOCA_template     sample template in 'zero pose' that can be used e.g. for speech-driven animation in VOCA
+    :param model_fname          saved FLAME model
+    :param num_samples          number of samples
+    :param out_path             output path to save the generated templates (no templates are saved if path is empty)
     '''
 
     tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
@@ -52,48 +52,54 @@ def sample_FLAME(model_fname, num_samples, out_path, sample_VOCA_template=False)
                                tf.concat((tf_shape, tf_exp), axis=-1),
                                tf.concat((tf_rot, tf_pose), axis=-1)))
 
+    texture_model = np.load(texture_fname)
+    tex_dim = texture_model['tex_dir'].shape[-1]
+    tf_tex_params = tf.Variable(np.zeros((1,tex_dim)), name="pose", dtype=tf.float64, trainable=True)
+    tf_tex_mean = tf.Variable(np.reshape(texture_model['mean'], (1,-1)), name='tex_mean', dtype=tf.float64, trainable=False)
+    tf_tex_dir = tf.Variable(np.reshape(texture_model['tex_dir'], (-1, tex_dim)).T, name='tex_dir', dtype=tf.float64, trainable=False)
+    
+    tf_tex = tf.add(tf_tex_mean, tf.matmul(tf_tex_params, tf_tex_dir)),
+    tf_tex = tf.reshape(tf_tex, (texture_model['tex_dir'].shape[0], texture_model['tex_dir'].shape[1], texture_model['tex_dir'].shape[2]))
+    tf_tex = tf.cast(tf.clip_by_value(tf_tex, 0.0, 255.0), tf.int64)
+
     with tf.Session() as session:
         session.run(tf.global_variables_initializer())
-
         mv = MeshViewer()
-        for i in range(num_samples):
-            if sample_VOCA_template:
-                assign_shape = tf.assign(tf_shape, np.hstack((np.random.randn(100), np.zeros(200)))[np.newaxis,:])
-                session.run([assign_shape])
-                out_fname = os.path.join(out_path, 'VOCA_template_%02d.ply' % (i+1))
-            else:
-                # assign_trans = tf.assign(tf_trans, np.random.randn(3)[np.newaxis,:])
-                assign_rot = tf.assign(tf_rot, np.random.randn(3)[np.newaxis,:] * 0.03)
-                assign_pose = tf.assign(tf_pose, np.random.randn(12)[np.newaxis,:] * 0.02)
-                assign_shape = tf.assign(tf_shape, np.hstack((np.random.randn(100), np.zeros(200)))[np.newaxis,:])
-                assign_exp = tf.assign(tf_exp, np.hstack((0.5*np.random.randn(50), np.zeros(50)))[np.newaxis,:])
-                session.run([assign_rot, assign_pose, assign_shape, assign_exp])
-                out_fname = os.path.join(out_path, 'FLAME_sample_%02d.ply' % (i+1))
 
-            sample_mesh = Mesh(session.run(tf_model), smpl.f)
-            mv.set_dynamic_meshes([sample_mesh], blocking=True)
+        for i in range(num_samples):
+            assign_tex = tf.assign(tf_tex_params, np.random.randn(tex_dim)[np.newaxis,:])
+            session.run([assign_tex])
+
+            v, tex = session.run([tf_model, tf_tex])
+            out_mesh = Mesh(v, smpl.f)
+            out_mesh.vt = texture_model['vt']
+            out_mesh.ft = texture_model['ft']
+
+            mv.set_dynamic_meshes([out_mesh], blocking=True)
             key = six.moves.input('Press (s) to save sample, any other key to continue ')
             if key == 's':
-                sample_mesh.write_ply(out_fname)
+                out_mesh_fname = os.path.join(out_path, 'tex_sample_%02d.obj' % (i+1))
+                out_tex_fname = out_mesh_fname.replace('obj', 'png')
+                cv2.imwrite(out_tex_fname, tex)
+                out_mesh.set_texture_image(out_tex_fname)
+                out_mesh.write_obj(out_mesh_fname)
 
 def main(args):
     if not os.path.exists(args.model_fname):
         print('FLAME model not found - %s' % args.model_fname)
         return
+    if not os.path.exists(args.texture_fname):
+        print('Texture model not found - %s' % args.texture_fname)
+        return
     if not os.path.exists(args.out_path):
         os.makedirs(args.out_path)
-    if args.option == 'sample_FLAME':
-        sample_FLAME(args.model_fname, int(args.num_samples), args.out_path, sample_VOCA_template=False)
-    else:
-        sample_FLAME(args.model_fname, int(args.num_samples), args.out_path, sample_VOCA_template=True)
-
+    sample_texture(args.model_fname, args.texture_fname, int(args.num_samples), args.out_path)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Sample FLAME shape space')
-    parser.add_argument('--option', default='sample_FLAME', help='sample random FLAME meshes or VOCA templates')
     parser.add_argument('--model_fname', default='./models/generic_model.pkl', help='Path of the FLAME model')
+    parser.add_argument('--texture_fname', default='./models/FLAME_texture.npz', help='Path of the texture model')
     parser.add_argument('--num_samples', default='5', help='Number of samples')
-    parser.add_argument('--out_path', default='./FLAME_samples', help='Output path')
+    parser.add_argument('--out_path', default='./texture_samples', help='Output path')
     args = parser.parse_args()
     main(args)
-

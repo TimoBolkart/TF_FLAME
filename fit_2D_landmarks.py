@@ -31,11 +31,10 @@ from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
 
-def fit_lmk2d(target_img, target_2d_lmks, template_fname, model_fname, lmk_face_idx, lmk_b_coords, weights):
+def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coords, weights):
     '''
     Fit FLAME to 2D landmarks
     :param target_2d_lmks:      target 2D landmarks provided as (num_lmks x 3) matrix
-    :param template_fname:      template mesh in FLAME topology (only the face information are used)
     :param model_fname:         saved FLAME model
     :param lmk_face_idx:        face indices of the landmark embedding in the FLAME topology
     :param lmk_b_coords:        barycentric coordinates of the landmark embedding in the FLAME topology
@@ -43,8 +42,6 @@ def fit_lmk2d(target_img, target_2d_lmks, template_fname, model_fname, lmk_face_
     :param weights:             weights of the individual objective functions
     :return: a mesh with the fitting results
     '''
-
-    template_mesh = Mesh(filename=template_fname)
 
     tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
     tf_rot = tf.Variable(np.zeros((1,3)), name="pose", dtype=tf.float64, trainable=True)
@@ -62,7 +59,7 @@ def fit_lmk2d(target_img, target_2d_lmks, template_fname, model_fname, lmk_face_
         # Mirror landmark y-coordinates
         target_2d_lmks[:,1] = target_img.shape[0]-target_2d_lmks[:,1]
 
-        lmks_3d = tf_get_model_lmks(tf_model, template_mesh, lmk_face_idx, lmk_b_coords)
+        lmks_3d = tf_get_model_lmks(tf_model, smpl.f, lmk_face_idx, lmk_b_coords)
 
         s2d = np.mean(np.linalg.norm(target_2d_lmks-np.mean(target_2d_lmks, axis=0), axis=1))
         s3d = tf.reduce_mean(tf.sqrt(tf.reduce_sum(tf.square(lmks_3d-tf.reduce_mean(lmks_3d, axis=0))[:, :2], axis=1)))
@@ -115,27 +112,24 @@ def fit_lmk2d(target_img, target_2d_lmks, template_fname, model_fname, lmk_face_
         vars = [tf_scale, tf_trans, tf_rot]
         loss = lmk_dist
         optimizer = scipy_pt(loss=loss, var_list=vars, method='L-BFGS-B', options={'disp': 1, 'ftol': 5e-6})
-        optimizer.minimize(session, fetches=[tf_model, tf_scale, tf.constant(template_mesh.f), tf.constant(target_img), tf.constant(target_2d_lmks), lmks_proj_2d], loss_callback=on_step)
+        optimizer.minimize(session, fetches=[tf_model, tf_scale, tf.constant(smpl.f), tf.constant(target_img), tf.constant(target_2d_lmks), lmks_proj_2d], loss_callback=on_step)
 
         print('Optimize model parameters')
         vars = [tf_scale, tf_trans[:2], tf_rot, tf_pose, tf_shape, tf_exp]
         loss = lmk_dist + shape_reg + exp_reg + neck_pose_reg + jaw_pose_reg + eyeballs_pose_reg
 
         optimizer = scipy_pt(loss=loss, var_list=vars, method='L-BFGS-B', options={'disp': 0, 'ftol': 1e-7})
-        optimizer.minimize(session, fetches=[tf_model, tf_scale, tf.constant(template_mesh.f), tf.constant(target_img), tf.constant(target_2d_lmks), lmks_proj_2d,
+        optimizer.minimize(session, fetches=[tf_model, tf_scale, tf.constant(smpl.f), tf.constant(target_img), tf.constant(target_2d_lmks), lmks_proj_2d,
                                              lmk_dist, shape_reg, exp_reg, neck_pose_reg, jaw_pose_reg, eyeballs_pose_reg], loss_callback=on_step)
 
         print('Fitting done')
         np_verts, np_scale = session.run([tf_model, tf_scale])
-        return Mesh(np_verts, template_mesh.f), np_scale
+        return Mesh(np_verts, smpl.f), np_scale
 
 
-def run_2d_lmk_fitting(model_fname, template_fname, flame_lmk_path, texture_mapping, target_img_path, target_lmk_path, out_path):
+def run_2d_lmk_fitting(model_fname, flame_lmk_path, texture_mapping, target_img_path, target_lmk_path, out_path):
     if 'generic' not in model_fname:
         print('You are fitting a gender specific model (i.e. female / male). Please make sure you selected the right gender model. Choose the generic model if gender is unknown.')
-    if not os.path.exists(template_fname):
-        print('Template mesh (in FLAME topology) not found - %s' % template_fname)
-        return
     if not os.path.exists(flame_lmk_path):
         print('FLAME landmark embedding not found - %s ' % flame_lmk_path)
         return
@@ -168,7 +162,7 @@ def run_2d_lmk_fitting(model_fname, template_fname, flame_lmk_path, texture_mapp
     # Weight of the eyeball pose (i.e. eyeball rotations) regularizer
     weights['eyeballs_pose'] = 10.0
 
-    result_mesh, result_scale = fit_lmk2d(target_img, lmk_2d, template_fname, model_fname, lmk_face_idx, lmk_b_coords, weights)
+    result_mesh, result_scale = fit_lmk2d(target_img, lmk_2d, model_fname, lmk_face_idx, lmk_b_coords, weights)
 
     if sys.version_info >= (3, 0):
         texture_data = np.load(texture_mapping, allow_pickle=True, encoding='latin1').item()
@@ -197,8 +191,6 @@ if __name__ == '__main__':
     # Path of the Tensorflow FLAME model (generic, female, male gender)
     # Choose the generic model if gender is unknown
     parser.add_argument('--model_fname', default='./models/generic_model.pkl', help='Path of the FLAME model')
-    # Path of a template mesh in FLAME topology
-    parser.add_argument('--template_fname', default='./data/template.ply', help='Path of a template mesh in FLAME topology')
     # Path of the landamrk embedding file into the FLAME surface
     parser.add_argument('--flame_lmk_path', default='./data/flame_static_embedding.pkl', help='Path of the landamrk embedding file into the FLAME surface')
     # Pre-computed texture mapping for FLAME topology meshes
@@ -212,4 +204,4 @@ if __name__ == '__main__':
     parser.add_argument('--out_path', default='./results', help='Path of the fitting output')
     args = parser.parse_args()
 
-    run_2d_lmk_fitting(args.model_fname, args.template_fname, args.flame_lmk_path, args.texture_mapping, args.target_img_path, args.target_lmk_path, args.out_path)
+    run_2d_lmk_fitting(args.model_fname, args.flame_lmk_path, args.texture_mapping, args.target_img_path, args.target_lmk_path, args.out_path)
