@@ -27,6 +27,10 @@ def render_mesh(mesh, height, width):
     light_pose[:3, 3] = np.array([0.0, 1.0, 1.0])
     scene.add(light, pose=light_pose.copy())
 
-    r = pyrender.OffscreenRenderer(viewport_width=width, viewport_height=height)
-    color, _ = r.render(scene)
+    try:
+        r = pyrender.OffscreenRenderer(viewport_width=width, viewport_height=height)
+        color, _ = r.render(scene)
+    except:
+        print('Rendering failed')
+        color = np.zeros((height, width, 3))
     return color[..., ::-1].copy()

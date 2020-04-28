@@ -31,15 +31,26 @@ from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
 
-def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coords, weights):
+def str2bool(val):
+    if isinstance(val, bool):
+        return val
+    elif isinstance(val, str):
+        if val.lower() in ['true', 't', 'yes', 'y']:
+            return True
+        elif val.lower() in ['false', 'f', 'no', 'n']:
+            return False
+    return False
+
+def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coords, weights, visualize):
     '''
     Fit FLAME to 2D landmarks
-    :param target_2d_lmks:      target 2D landmarks provided as (num_lmks x 3) matrix
-    :param model_fname:         saved FLAME model
-    :param lmk_face_idx:        face indices of the landmark embedding in the FLAME topology
-    :param lmk_b_coords:        barycentric coordinates of the landmark embedding in the FLAME topology
+    :param target_2d_lmks      target 2D landmarks provided as (num_lmks x 3) matrix
+    :param model_fname         saved FLAME model
+    :param lmk_face_idx        face indices of the landmark embedding in the FLAME topology
+    :param lmk_b_coords        barycentric coordinates of the landmark embedding in the FLAME topology
                                 (i.e. weighting of the three vertices for the trinagle, the landmark is embedded in
-    :param weights:             weights of the individual objective functions
+    :param weights             weights of the individual objective functions
+    :param visualize           visualize fitting progress
     :return: a mesh with the fitting results
     '''
 
@@ -79,34 +90,38 @@ def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coord
 
         session.run(tf.global_variables_initializer())
 
-        def on_step(verts, scale, faces, target_img, target_lmks, opt_lmks, lmk_dist=0.0, shape_reg=0.0, exp_reg=0.0, neck_pose_reg=0.0, jaw_pose_reg=0.0, eyeballs_pose_reg=0.0):
-            import cv2
-            import sys
-            import numpy as np
-            from psbody.mesh import Mesh
-            from utils.render_mesh import render_mesh
+        if visualize:
+            def on_step(verts, scale, faces, target_img, target_lmks, opt_lmks, lmk_dist=0.0, shape_reg=0.0, exp_reg=0.0, neck_pose_reg=0.0, jaw_pose_reg=0.0, eyeballs_pose_reg=0.0):
+                import cv2
+                import sys
+                import numpy as np
+                from psbody.mesh import Mesh
+                from utils.render_mesh import render_mesh
 
-            if lmk_dist>0.0 or shape_reg>0.0 or exp_reg>0.0 or neck_pose_reg>0.0 or jaw_pose_reg>0.0 or eyeballs_pose_reg>0.0:
-                print('lmk_dist: %f, shape_reg: %f, exp_reg: %f, neck_pose_reg: %f, jaw_pose_reg: %f, eyeballs_pose_reg: %f' % (lmk_dist, shape_reg, exp_reg, neck_pose_reg, jaw_pose_reg, eyeballs_pose_reg))
+                if lmk_dist>0.0 or shape_reg>0.0 or exp_reg>0.0 or neck_pose_reg>0.0 or jaw_pose_reg>0.0 or eyeballs_pose_reg>0.0:
+                    print('lmk_dist: %f, shape_reg: %f, exp_reg: %f, neck_pose_reg: %f, jaw_pose_reg: %f, eyeballs_pose_reg: %f' % (lmk_dist, shape_reg, exp_reg, neck_pose_reg, jaw_pose_reg, eyeballs_pose_reg))
 
-            plt_target_lmks = target_lmks.copy()
-            plt_target_lmks[:, 1] = target_img.shape[0] - plt_target_lmks[:, 1]
-            for (x, y) in plt_target_lmks:
-                cv2.circle(target_img, (int(x), int(y)), 4, (0, 0, 255), -1)
+                plt_target_lmks = target_lmks.copy()
+                plt_target_lmks[:, 1] = target_img.shape[0] - plt_target_lmks[:, 1]
+                for (x, y) in plt_target_lmks:
+                    cv2.circle(target_img, (int(x), int(y)), 4, (0, 0, 255), -1)
 
-            plt_opt_lmks = opt_lmks.copy()
-            plt_opt_lmks[:,1] = target_img.shape[0] - plt_opt_lmks[:,1]
-            for (x, y) in plt_opt_lmks:
-                cv2.circle(target_img, (int(x), int(y)), 4, (255, 0, 0), -1)
-
-            if sys.version_info >= (3, 0):
-                rendered_img = render_mesh(Mesh(scale*verts, faces), height=target_img.shape[0], width=target_img.shape[1])
+                plt_opt_lmks = opt_lmks.copy()
+                plt_opt_lmks[:,1] = target_img.shape[0] - plt_opt_lmks[:,1]
                 for (x, y) in plt_opt_lmks:
-                    cv2.circle(rendered_img, (int(x), int(y)), 4, (255, 0, 0), -1)
-                target_img = np.hstack((target_img, rendered_img))
+                    cv2.circle(target_img, (int(x), int(y)), 4, (255, 0, 0), -1)
 
-            cv2.imshow('img', target_img)
-            cv2.waitKey(10)
+                if sys.version_info >= (3, 0):
+                    rendered_img = render_mesh(Mesh(scale*verts, faces), height=target_img.shape[0], width=target_img.shape[1])
+                    for (x, y) in plt_opt_lmks:
+                        cv2.circle(rendered_img, (int(x), int(y)), 4, (255, 0, 0), -1)
+                    target_img = np.hstack((target_img, rendered_img))
+
+                cv2.imshow('img', target_img)
+                cv2.waitKey(10)
+        else:
+            def on_step(*_):
+                pass
 
         print('Optimize rigid transformation')
         vars = [tf_scale, tf_trans, tf_rot]
@@ -127,7 +142,7 @@ def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coord
         return Mesh(np_verts, smpl.f), np_scale
 
 
-def run_2d_lmk_fitting(model_fname, flame_lmk_path, texture_mapping, target_img_path, target_lmk_path, out_path):
+def run_2d_lmk_fitting(model_fname, flame_lmk_path, texture_mapping, target_img_path, target_lmk_path, out_path, visualize):
     if 'generic' not in model_fname:
         print('You are fitting a gender specific model (i.e. female / male). Please make sure you selected the right gender model. Choose the generic model if gender is unknown.')
     if not os.path.exists(flame_lmk_path):
@@ -162,7 +177,7 @@ def run_2d_lmk_fitting(model_fname, flame_lmk_path, texture_mapping, target_img_
     # Weight of the eyeball pose (i.e. eyeball rotations) regularizer
     weights['eyeballs_pose'] = 10.0
 
-    result_mesh, result_scale = fit_lmk2d(target_img, lmk_2d, model_fname, lmk_face_idx, lmk_b_coords, weights)
+    result_mesh, result_scale = fit_lmk2d(target_img, lmk_2d, model_fname, lmk_face_idx, lmk_b_coords, weights, visualize)
 
     if sys.version_info >= (3, 0):
         texture_data = np.load(texture_mapping, allow_pickle=True, encoding='latin1').item()
@@ -181,9 +196,10 @@ def run_2d_lmk_fitting(model_fname, flame_lmk_path, texture_mapping, target_img_
     result_mesh.write_obj(out_mesh_fname)
     np.save(os.path.join(out_path, os.path.splitext(os.path.basename(target_img_path))[0] + '_scale.npy'), result_scale)
 
-    mv = MeshViewers(shape=[1,2], keepalive=True)
-    mv[0][0].set_static_meshes([Mesh(result_mesh.v, result_mesh.f)])
-    mv[0][1].set_static_meshes([result_mesh])
+    if visualize:
+        mv = MeshViewers(shape=[1,2], keepalive=True)
+        mv[0][0].set_static_meshes([Mesh(result_mesh.v, result_mesh.f)])
+        mv[0][1].set_static_meshes([result_mesh])
 
 
 if __name__ == '__main__':
@@ -202,6 +218,9 @@ if __name__ == '__main__':
     parser.add_argument('--target_lmk_path', default='./data/imgHQ00088_lmks.npy', help='2D landmark file that should be fitted (landmarks must be corresponding with the defined FLAME landmarks)')
     # Output path
     parser.add_argument('--out_path', default='./results', help='Path of the fitting output')
+    # Visualize fitting
+    parser.add_argument('--visualize', default='True', help='Visualize fitting progress and final fitting result')
+
     args = parser.parse_args()
 
-    run_2d_lmk_fitting(args.model_fname, args.flame_lmk_path, args.texture_mapping, args.target_img_path, args.target_lmk_path, args.out_path)
+    run_2d_lmk_fitting(args.model_fname, args.flame_lmk_path, args.texture_mapping, args.target_img_path, args.target_lmk_path, args.out_path, str2bool(args.visualize))
