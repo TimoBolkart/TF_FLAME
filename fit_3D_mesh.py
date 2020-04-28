@@ -26,23 +26,16 @@ from psbody.mesh.meshviewer import MeshViewer
 from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
-def fit_3D_mesh(target_3d_mesh_fname, template_fname, model_fname, weights, show_fitting=True):
+def fit_3D_mesh(target_3d_mesh_fname, model_fname, weights, show_fitting=True):
     '''
     Fit FLAME to 3D mesh in correspondence to the FLAME mesh (i.e. same number of vertices, same mesh topology)
     :param target_3d_mesh_fname:    target 3D mesh filename
-    :param template_fname:          template mesh in FLAME topology (only the face information are used)
     :param model_fname:             saved FLAME model
-
     :param weights:             weights of the individual objective functions
     :return: a mesh with the fitting results
     '''
 
     target_mesh = Mesh(filename=target_3d_mesh_fname)
-    template_mesh = Mesh(filename=template_fname)
-
-    if target_mesh.v.shape[0] != template_mesh.v.shape[0]:
-        print('Target mesh does not have the same number of vertices')
-        return
 
     tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
     tf_rot = tf.Variable(np.zeros((1,3)), name="pose", dtype=tf.float64, trainable=True)
@@ -72,7 +65,7 @@ def fit_3D_mesh(target_3d_mesh_fname, template_fname, model_fname, weights, show
         optimizer.minimize(session)
 
         # Optimize for the model parameters
-        vars = [tf_trans, tf_pose, tf_shape, tf_exp]
+        vars = [tf_trans, tf_rot, tf_pose, tf_shape, tf_exp]
         loss = weights['data'] * mesh_dist + weights['shape'] * shape_reg + weights['expr'] * exp_reg + \
                weights['neck_pose'] * neck_pose_reg + weights['jaw_pose'] * jaw_pose_reg + weights['eyeballs_pose'] * eyeballs_pose_reg
 
@@ -85,23 +78,20 @@ def fit_3D_mesh(target_3d_mesh_fname, template_fname, model_fname, weights, show
         if show_fitting:
             # Visualize fitting
             mv = MeshViewer()
-            fitting_mesh = Mesh(session.run(tf_model), template_mesh.f)
+            fitting_mesh = Mesh(session.run(tf_model), smpl.f)
             fitting_mesh.set_vertex_colors('light sky blue')
 
             mv.set_static_meshes([target_mesh, fitting_mesh])
             six.moves.input('Press key to continue')
 
-        return Mesh(session.run(tf_model), template_mesh.f)
+        return Mesh(session.run(tf_model), smpl.f)
 
 
 def run_corresponding_mesh_fitting():
     # Path of the FLAME model
     model_fname = './models/generic_model.pkl'
-    # model_fname = '/models/generic_model.pkl'
-    # model_fname = '/models/generic_model.pkl'
-
-    # Path of a template mesh in FLAME topology
-    template_fname = './data/template.ply'
+    # model_fname = '/models/female_model.pkl'
+    # model_fname = '/models/male_model.pkl'
 
     # target 3D mesh in dense vertex-correspondence to the model
     target_mesh_path = './data/registered_mesh.ply'
@@ -125,7 +115,7 @@ def run_corresponding_mesh_fitting():
     # Show landmark fitting (default: red = target landmarks, blue = fitting landmarks)
     show_fitting = True
 
-    result_mesh = fit_3D_mesh(target_mesh_path, template_fname, model_fname, weights, show_fitting=show_fitting)
+    result_mesh = fit_3D_mesh(target_mesh_path, model_fname, weights, show_fitting=show_fitting)
 
     if not os.path.exists(os.path.dirname(out_mesh_fname)):
         os.makedirs(os.path.dirname(out_mesh_fname))
