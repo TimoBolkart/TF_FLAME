@@ -28,7 +28,17 @@ from utils.landmarks import load_binary_pickle, load_embedding, tf_get_model_lmk
 from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
-def sample_FLAME(model_fname, num_samples, out_path, sample_VOCA_template=False):
+def str2bool(val):
+    if isinstance(val, bool):
+        return val
+    elif isinstance(val, str):
+        if val.lower() in ['true', 't', 'yes', 'y']:
+            return True
+        elif val.lower() in ['false', 'f', 'no', 'n']:
+            return False
+    return False
+
+def sample_FLAME(model_fname, num_samples, out_path, visualize, sample_VOCA_template=False):
     '''
     Sample the FLAME model to demonstrate how to vary the model parameters.FLAME has parameters to
         - model identity-dependent shape variations (paramters: shape),
@@ -39,6 +49,7 @@ def sample_FLAME(model_fname, num_samples, out_path, sample_VOCA_template=False)
     :param model_fname              saved FLAME model
     :param num_samples              number of samples
     :param out_path                 output path to save the generated templates (no templates are saved if path is empty)
+    :param visualize                visualize samples
     :param sample_VOCA_template     sample template in 'zero pose' that can be used e.g. for speech-driven animation in VOCA
     '''
 
@@ -55,7 +66,8 @@ def sample_FLAME(model_fname, num_samples, out_path, sample_VOCA_template=False)
     with tf.Session() as session:
         session.run(tf.global_variables_initializer())
 
-        mv = MeshViewer()
+        if visualize:
+            mv = MeshViewer()
         for i in range(num_samples):
             if sample_VOCA_template:
                 assign_shape = tf.assign(tf_shape, np.hstack((np.random.randn(100), np.zeros(200)))[np.newaxis,:])
@@ -71,9 +83,12 @@ def sample_FLAME(model_fname, num_samples, out_path, sample_VOCA_template=False)
                 out_fname = os.path.join(out_path, 'FLAME_sample_%02d.ply' % (i+1))
 
             sample_mesh = Mesh(session.run(tf_model), smpl.f)
-            mv.set_dynamic_meshes([sample_mesh], blocking=True)
-            key = six.moves.input('Press (s) to save sample, any other key to continue ')
-            if key == 's':
+            if visualize:
+                mv.set_dynamic_meshes([sample_mesh], blocking=True)
+                key = six.moves.input('Press (s) to save sample, any other key to continue ')
+                if key == 's':
+                    sample_mesh.write_ply(out_fname)
+            else:
                 sample_mesh.write_ply(out_fname)
 
 def main(args):
@@ -83,9 +98,9 @@ def main(args):
     if not os.path.exists(args.out_path):
         os.makedirs(args.out_path)
     if args.option == 'sample_FLAME':
-        sample_FLAME(args.model_fname, int(args.num_samples), args.out_path, sample_VOCA_template=False)
+        sample_FLAME(args.model_fname, int(args.num_samples), args.out_path, str2bool(args.visualize), sample_VOCA_template=False)
     else:
-        sample_FLAME(args.model_fname, int(args.num_samples), args.out_path, sample_VOCA_template=True)
+        sample_FLAME(args.model_fname, int(args.num_samples), args.out_path, str2bool(args.visualize), sample_VOCA_template=True)
 
 
 if __name__ == '__main__':
@@ -94,6 +109,7 @@ if __name__ == '__main__':
     parser.add_argument('--model_fname', default='./models/generic_model.pkl', help='Path of the FLAME model')
     parser.add_argument('--num_samples', default='5', help='Number of samples')
     parser.add_argument('--out_path', default='./FLAME_samples', help='Output path')
+    parser.add_argument('--visualize', default='True', help='Visualize fitting progress and final fitting result')
     args = parser.parse_args()
     main(args)
 
