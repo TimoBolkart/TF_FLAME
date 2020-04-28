@@ -27,20 +27,17 @@ from utils.landmarks import load_embedding, tf_get_model_lmks, create_lmk_sphere
 from tf_smpl.batch_smpl import SMPL
 from tensorflow.contrib.opt import ScipyOptimizerInterface as scipy_pt
 
-def fit_lmk3d(target_3d_lmks, template_fname, model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=True):
+def fit_lmk3d(target_3d_lmks, model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=True):
     '''
     Fit FLAME to 3D landmarks
     :param target_3d_lmks:      target 3D landmarks provided as (num_lmks x 3) matrix
-    :param template_fname:      template mesh in FLAME topology (only the face information are used)
-    :param model_fname:      saved Tensorflow FLAME model
+    :param model_fname:         saved Tensorflow FLAME model
     :param lmk_face_idx:        face indices of the landmark embedding in the FLAME topology
     :param lmk_b_coords:        barycentric coordinates of the landmark embedding in the FLAME topology
                                 (i.e. weighting of the three vertices for the trinagle, the landmark is embedded in
     :param weights:             weights of the individual objective functions
     :return: a mesh with the fitting results
     '''
-
-    template_mesh = Mesh(filename=template_fname)
 
     tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
     tf_rot = tf.Variable(np.zeros((1,3)), name="pose", dtype=tf.float64, trainable=True)
@@ -54,7 +51,7 @@ def fit_lmk3d(target_3d_lmks, template_fname, model_fname, lmk_face_idx, lmk_b_c
     with tf.Session() as session:
         session.run(tf.global_variables_initializer())
 
-        lmks = tf_get_model_lmks(tf_model, template_mesh, lmk_face_idx, lmk_b_coords)
+        lmks = tf_get_model_lmks(tf_model, smpl.f, lmk_face_idx, lmk_b_coords)
         lmk_dist = tf.reduce_sum(tf.square(1000 * tf.subtract(lmks, target_3d_lmks)))
         neck_pose_reg = tf.reduce_sum(tf.square(tf_pose[:3]))
         jaw_pose_reg = tf.reduce_sum(tf.square(tf_pose[3:6]))
@@ -84,10 +81,10 @@ def fit_lmk3d(target_3d_lmks, template_fname, model_fname, lmk_face_idx, lmk_b_c
             # Visualize landmark fitting
             mv = MeshViewer()
             mv.set_static_meshes(create_lmk_spheres(target_3d_lmks, 0.001, [255.0, 0.0, 0.0]))
-            mv.set_dynamic_meshes([Mesh(session.run(tf_model), template_mesh.f)] + create_lmk_spheres(session.run(lmks), 0.001, [0.0, 0.0, 255.0]), blocking=True)
+            mv.set_dynamic_meshes([Mesh(session.run(tf_model), smpl.f)] + create_lmk_spheres(session.run(lmks), 0.001, [0.0, 0.0, 255.0]), blocking=True)
             six.moves.input('Press key to continue')
 
-        return Mesh(session.run(tf_model), template_mesh.f)
+        return Mesh(session.run(tf_model), smpl.f)
 
 
 def run_3d_lmk_fitting():
@@ -95,9 +92,6 @@ def run_3d_lmk_fitting():
     model_fname = './models/generic_model.pkl'
     # model_fname = './models/female_model.pkl'
     # model_fname = './models/male_model.pkl'
-
-    # Path of a template mesh in FLAME topology
-    template_fname = './data/template.ply'
 
     # Path of the landamrk embedding file into the FLAME surface
     flame_lmk_path = './data/flame_static_embedding.pkl'
@@ -127,7 +121,7 @@ def run_3d_lmk_fitting():
     # Show landmark fitting (default: red = target landmarks, blue = fitting landmarks)
     show_fitting = True
 
-    result_mesh = fit_lmk3d(lmk_3d, template_fname, model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=show_fitting)
+    result_mesh = fit_lmk3d(lmk_3d, model_fname, lmk_face_idx, lmk_b_coords, weights, show_fitting=show_fitting)
 
     if not os.path.exists(os.path.dirname(out_mesh_fname)):
         os.makedirs(os.path.dirname(out_mesh_fname))
