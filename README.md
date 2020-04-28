@@ -88,6 +88,7 @@ python fit_2D_landmarks.py --model_fname './models/male_model.pkl' --flame_lmk_p
 python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ01148.jpeg' --target_lmk_path './data/imgHQ01148_lmks.npy' --out_path './results'
 
 ```
+By default, running the code opens a window to visualize the fitting progress. This will fail if running the code remotely. In this case try running the code with an additional flag ```--visualize False``` to disable the visualization.
 
 ##### Create textured mesh
 
