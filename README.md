@@ -77,6 +77,7 @@ This demo introduces the different FLAME parameters (i.e. pose, shape, expressio
 ```
 python sample_FLAME.py --option sample_FLAME --model_fname './models/generic_model.pkl' --num_samples 5 --out_path './FLAME_samples'
 ```
+By default, running this demo uses an OpenGL-based mesh viewer viewer to visualize the samples. If this causes any problems, try running the demo with the additional flag --visualize False to disable the visualization.
 
 ##### Fit 2D landmarks
 
@@ -88,7 +89,7 @@ python fit_2D_landmarks.py --model_fname './models/male_model.pkl' --flame_lmk_p
 python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data.npy' --target_img_path './data/imgHQ01148.jpeg' --target_lmk_path './data/imgHQ01148_lmks.npy' --out_path './results'
 
 ```
-By default, running the code opens a window to visualize the fitting progress. This will fail if running the code remotely. In this case try running the code with an additional flag ```--visualize False``` to disable the visualization.
+By default, running the demo opens a window to visualize the fitting progress. This will fail if running the code remotely. In this case try running the demo with an additional flag ```--visualize False``` to disable the visualization.
 
 ##### Create textured mesh
 
@@ -128,8 +129,7 @@ python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fn
 ```
 python sample_FLAME.py --option sample_VOCA_template --model_fname './models/generic_model.pkl' --num_samples 5 --out_path './FLAME_samples'
 ```
-
-
+By default, running this demo uses an OpenGL-based mesh viewer viewer to visualize the samples. If this causes any problems, try running the demo with the additional flag --visualize False to disable the visualization.
 
 ### Supported projects
 
