@@ -8,6 +8,9 @@
 
 FLAME combines a linear identity shape space (trained from 3800 scans of human heads) with an articulated neck, jaw, and eyeballs, pose-dependent corrective blendshapes, and additional global expression blendshapes. For details please about the model, please see the [scientific publication](https://ps.is.tuebingen.mpg.de/uploads_file/attachment/attachment/400/paper.pdf) and the [supplementary video](https://youtu.be/36rPTkhiJTM).
 
+See also [FLAME PyTorch](https://github.com/soubhiksanyal/FLAME_PyTorch) or the [FLAME photometric optimization](https://github.com/HavenFeng/photometric_optimization) repositories.
+
+
 ### Content
 
 This repository demonstrates how to 
