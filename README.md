@@ -18,7 +18,8 @@ This repository demonstrates how to
 2) fit the 3D model to 2D landmarks
 3) fit the 3D model to 3D landmarks 
 4) fit the 3D model to registered 3D meshes
-5) how to generate templates for speech-driven facial animation ([VOCA](https://github.com/TimoBolkart/voca))
+5) sample the texture space
+6) how to generate templates for speech-driven facial animation ([VOCA](https://github.com/TimoBolkart/voca))
 
 ### Set-up
 
