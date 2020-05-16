@@ -53,9 +53,9 @@ def fit_lmk3d(target_3d_lmks, model_fname, lmk_face_idx, lmk_b_coords, weights, 
 
         lmks = tf_get_model_lmks(tf_model, smpl.f, lmk_face_idx, lmk_b_coords)
         lmk_dist = tf.reduce_sum(tf.square(1000 * tf.subtract(lmks, target_3d_lmks)))
-        neck_pose_reg = tf.reduce_sum(tf.square(tf_pose[:3]))
-        jaw_pose_reg = tf.reduce_sum(tf.square(tf_pose[3:6]))
-        eyeballs_pose_reg = tf.reduce_sum(tf.square(tf_pose[6:]))
+        neck_pose_reg = tf.reduce_sum(tf.square(tf_pose[:,:3]))
+        jaw_pose_reg = tf.reduce_sum(tf.square(tf_pose[:,3:6]))
+        eyeballs_pose_reg = tf.reduce_sum(tf.square(tf_pose[:,6:]))
         shape_reg = tf.reduce_sum(tf.square(tf_shape))
         exp_reg = tf.reduce_sum(tf.square(tf_exp))
 

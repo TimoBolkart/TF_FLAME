@@ -55,7 +55,7 @@ def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coord
     '''
 
     tf_trans = tf.Variable(np.zeros((1,3)), name="trans", dtype=tf.float64, trainable=True)
-    tf_rot = tf.Variable(np.zeros((1,3)), name="pose", dtype=tf.float64, trainable=True)
+    tf_rot = tf.Variable(np.zeros((1,3)), name="rot", dtype=tf.float64, trainable=True)
     tf_pose = tf.Variable(np.zeros((1,12)), name="pose", dtype=tf.float64, trainable=True)
     tf_shape = tf.Variable(np.zeros((1,300)), name="shape", dtype=tf.float64, trainable=True)
     tf_exp = tf.Variable(np.zeros((1,100)), name="expression", dtype=tf.float64, trainable=True)
@@ -65,7 +65,7 @@ def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coord
                                tf.concat((tf_rot, tf_pose), axis=-1)))
 
     with tf.Session() as session:
-        session.run(tf.global_variables_initializer())
+        # session.run(tf.global_variables_initializer())
 
         # Mirror landmark y-coordinates
         target_2d_lmks[:,1] = target_img.shape[0]-target_2d_lmks[:,1]
@@ -82,9 +82,9 @@ def fit_lmk2d(target_img, target_2d_lmks, model_fname, lmk_face_idx, lmk_b_coord
 
         factor = max(max(target_2d_lmks[:,0]) - min(target_2d_lmks[:,0]),max(target_2d_lmks[:,1]) - min(target_2d_lmks[:,1]))
         lmk_dist = weights['lmk']*tf.reduce_sum(tf.square(tf.subtract(lmks_proj_2d, target_2d_lmks))) / (factor ** 2)
-        neck_pose_reg = weights['neck_pose']*tf.reduce_sum(tf.square(tf_pose[:3]))
-        jaw_pose_reg = weights['jaw_pose']*tf.reduce_sum(tf.square(tf_pose[3:6]))
-        eyeballs_pose_reg = weights['eyeballs_pose']*tf.reduce_sum(tf.square(tf_pose[6:]))
+        neck_pose_reg = weights['neck_pose']*tf.reduce_sum(tf.square(tf_pose[:,:3]))
+        jaw_pose_reg = weights['jaw_pose']*tf.reduce_sum(tf.square(tf_pose[:,3:6]))
+        eyeballs_pose_reg = weights['eyeballs_pose']*tf.reduce_sum(tf.square(tf_pose[:,6:]))
         shape_reg = weights['shape']*tf.reduce_sum(tf.square(tf_shape))
         exp_reg = weights['expr']*tf.reduce_sum(tf.square(tf_exp))
 

@@ -51,9 +51,9 @@ def fit_3D_mesh(target_3d_mesh_fname, model_fname, weights, show_fitting=True):
         session.run(tf.global_variables_initializer())
 
         mesh_dist = tf.reduce_sum(tf.square(tf.subtract(tf_model, target_mesh.v)))
-        neck_pose_reg = tf.reduce_sum(tf.square(tf_pose[:3]))
-        jaw_pose_reg = tf.reduce_sum(tf.square(tf_pose[3:6]))
-        eyeballs_pose_reg = tf.reduce_sum(tf.square(tf_pose[6:]))
+        neck_pose_reg = tf.reduce_sum(tf.square(tf_pose[:,:3]))
+        jaw_pose_reg = tf.reduce_sum(tf.square(tf_pose[:,3:6]))
+        eyeballs_pose_reg = tf.reduce_sum(tf.square(tf_pose[:,6:]))
         shape_reg = tf.reduce_sum(tf.square(tf_shape))
         exp_reg = tf.reduce_sum(tf.square(tf_exp))
 
