@@ -53,13 +53,46 @@ def sample_texture(model_fname, texture_fname, num_samples, out_path):
                                tf.concat((tf_rot, tf_pose), axis=-1)))
 
     texture_model = np.load(texture_fname)
-    tex_dim = texture_model['tex_dir'].shape[-1]
-    tf_tex_params = tf.Variable(np.zeros((1,tex_dim)), name="pose", dtype=tf.float64, trainable=True)
-    tf_tex_mean = tf.Variable(np.reshape(texture_model['mean'], (1,-1)), name='tex_mean', dtype=tf.float64, trainable=False)
-    tf_tex_dir = tf.Variable(np.reshape(texture_model['tex_dir'], (-1, tex_dim)).T, name='tex_dir', dtype=tf.float64, trainable=False)
-    
-    tf_tex = tf.add(tf_tex_mean, tf.matmul(tf_tex_params, tf_tex_dir)),
-    tf_tex = tf.reshape(tf_tex, (texture_model['tex_dir'].shape[0], texture_model['tex_dir'].shape[1], texture_model['tex_dir'].shape[2]))
+    if ('MU' in texture_model) and ('PC' in texture_model) and ('specMU' in texture_model) and ('specPC' in texture_model):
+        b_albedoMM = True
+    elif ('mean' in texture_model) and ('tex_dir' in texture_model):
+        b_albedoMM = False
+    else:
+        print('Unknown texture model - %s' % texture_fname)
+        return
+ 
+    if b_albedoMM:
+        # York Albedo Morphable Model 
+        num_tex_pc = texture_model['PC'].shape[-1]
+        tex_shape = texture_model['MU'].shape
+
+        tf_tex_params = tf.Variable(np.zeros((1,num_tex_pc)), name="params", dtype=tf.float64, trainable=True)
+        
+        tf_MU = tf.Variable(np.reshape(texture_model['MU'], (1,-1)), name='MU', dtype=tf.float64, trainable=False)
+        tf_PC = tf.Variable(np.reshape(texture_model['PC'], (-1, num_tex_pc)).T, name='PC', dtype=tf.float64, trainable=False)
+        tf_specMU = tf.Variable(np.reshape(texture_model['specMU'], (1,-1)), name='specMU', dtype=tf.float64, trainable=False)
+        tf_specPC = tf.Variable(np.reshape(texture_model['specPC'], (-1, num_tex_pc)).T, name='specPC', dtype=tf.float64, trainable=False)
+
+        tf_diff_albedo = tf.add(tf_MU, tf.matmul(tf_tex_params, tf_PC))
+        tf_spec_albedo = tf.add(tf_specMU, tf.matmul(tf_tex_params, tf_specPC))
+        tf_tex = 255*tf.math.pow(0.6*tf.add(tf_diff_albedo, tf_spec_albedo), 1.0/2.2)
+    else:
+        # MPI texture space or equivalent
+        num_tex_pc = texture_model['tex_dir'].shape[-1]
+        tex_shape = texture_model['mean'].shape
+
+        tf_tex_params = tf.Variable(np.zeros((1,num_tex_pc)), name="params", dtype=tf.float64, trainable=True)
+        tf_tex_mean = tf.Variable(np.reshape(texture_model['mean'], (1,-1)), name='tex_mean', dtype=tf.float64, trainable=False)
+        tf_tex_dir = tf.Variable(np.reshape(texture_model['tex_dir'], (-1, num_tex_pc)).T, name='tex_dir', dtype=tf.float64, trainable=False)
+        tf_tex = tf.add(tf_tex_mean, tf.matmul(tf_tex_params, tf_tex_dir))
+
+
+    # tf_diff_albedo = tf.reshape(tf_diff_albedo, (tex_shape[0], tex_shape[1], tex_shape[2]))
+    # tf_diff_albedo = tf.cast(tf.clip_by_value(tf_diff_albedo, 0.0, 255.0), tf.int64)
+    # tf_spec_albedo = tf.reshape(tf_spec_albedo, (tex_shape[0], tex_shape[1], tex_shape[2]))
+    # tf_spec_albedo = tf.cast(tf.clip_by_value(tf_spec_albedo, 0.0, 255.0), tf.int64)
+
+    tf_tex = tf.reshape(tf_tex, (tex_shape[0], tex_shape[1], tex_shape[2]))
     tf_tex = tf.cast(tf.clip_by_value(tf_tex, 0.0, 255.0), tf.int64)
 
     with tf.Session() as session:
@@ -67,8 +100,10 @@ def sample_texture(model_fname, texture_fname, num_samples, out_path):
         mv = MeshViewer()
 
         for i in range(num_samples):
-            assign_tex = tf.assign(tf_tex_params, np.random.randn(tex_dim)[np.newaxis,:])
+            assign_tex = tf.assign(tf_tex_params, np.random.randn(num_tex_pc)[np.newaxis,:])
             session.run([assign_tex])
+
+            # import pdb; pdb.set_trace()
 
             v, tex = session.run([tf_model, tf_tex])
             out_mesh = Mesh(v, smpl.f)

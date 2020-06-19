@@ -67,7 +67,7 @@ sudo apt-get install python-opengl
 
 ### Data
 
-Download the FLAME model and the texture space from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data.<br/>
+Download the FLAME model and the MPI texture space from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data. Further, download the [AlbedoMM (CVPR 2020)](https://github.com/waps101/AlbedoMM) texture space for FLAME.<br/>
 
 
 ### Demo
@@ -122,9 +122,16 @@ Note that this demo to date does not support registering arbitrary 3D face scans
 
 ##### Sample texture space
 
-This demo generates FLAME meshes with textures randomly sampled from the texture space.
+Two texture spaces are available for FLAME, the [MPI texture space](https://flame.is.tue.mpg.de/downloads) and [AlbedoMM](https://github.com/waps101/AlbedoMM). This demo generates FLAME meshes with textures randomly sampled from 
+
+1) the MPI texture space
 ```
-python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/FLAME_texture.npz' --num_samples 5 --out_path './texture_samples'
+python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/FLAME_texture.npz' --num_samples 5 --out_path './texture_samples_MPI'
+```
+
+and 2) from the AlbedoMM texture space
+```
+python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/AlbedoMM_FLAME.npz' --num_samples 5 --out_path './texture_samples_AlbedoMM'
 ```
 
 ##### Generate VOCA template
