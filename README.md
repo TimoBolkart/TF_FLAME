@@ -127,7 +127,7 @@ Two texture spaces are available for FLAME, the [MPI texture space](https://flam
 python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/FLAME_texture.npz' --num_samples 5 --out_path './texture_samples_MPI'
 ```
 
-Randomly sample textures from the AlbedoMM texture space (download [here](https://github.com/waps101/AlbedoMM))
+Randomly sample textures from the [AlbedoMM](http://openaccess.thecvf.com/content_CVPR_2020/papers/Smith_A_Morphable_Face_Albedo_Model_CVPR_2020_paper.pdf) texture space (download [here](https://github.com/waps101/AlbedoMM))
 ```
 python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/AlbedoMM_FLAME.npz' --num_samples 5 --out_path './texture_samples_AlbedoMM'
 ```
