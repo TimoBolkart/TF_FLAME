@@ -129,7 +129,7 @@ python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fn
 
 Randomly sample textures from the [AlbedoMM](http://openaccess.thecvf.com/content_CVPR_2020/papers/Smith_A_Morphable_Face_Albedo_Model_CVPR_2020_paper.pdf) texture space (download  albedoModel2020_FLAME_albedoPart.npz [here](https://github.com/waps101/AlbedoMM/releases))
 ```
-python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/AlbedoMM_FLAME.npz' --num_samples 5 --out_path './texture_samples_AlbedoMM'
+python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/albedoModel2020_FLAME_albedoPart.npz' --num_samples 5 --out_path './texture_samples_AlbedoMM'
 ```
 
 ##### Generate VOCA template
