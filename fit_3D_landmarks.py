@@ -114,7 +114,7 @@ def run_3d_lmk_fitting():
     # Weight of the expression regularizer
     weights['expr']  = 1.0
     # Weight of the neck pose (i.e. neck rotationh around the neck) regularizer
-    weights['neck_pose'] = 100.0
+    weights['neck_pose'] = 1000.0
     # Weight of the jaw pose (i.e. jaw rotation for opening the mouth) regularizer
     weights['jaw_pose'] = 1.0
     # Weight of the eyeball pose (i.e. eyeball rotations) regularizer
