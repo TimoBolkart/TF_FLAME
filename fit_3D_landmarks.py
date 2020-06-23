@@ -95,6 +95,7 @@ def run_3d_lmk_fitting():
 
     # Path of the landamrk embedding file into the FLAME surface
     flame_lmk_path = './data/flame_static_embedding.pkl'
+
     # 3D landmark file that should be fitted (landmarks must be corresponding with the defined FLAME landmarks)
     # see "img1_lmks_visualized.jpeg" or "see the img2_lmks_visualized.jpeg" for the order of the landmarks
     target_lmk_path = './data/landmark_3d.npy'
