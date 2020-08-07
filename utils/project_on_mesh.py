@@ -17,6 +17,7 @@ def compute_texture_map(source_img, target_mesh, target_scale, texture_data):
     valid_pixel_ids = texture_data.get('valid_pixel_ids')
     valid_pixel_3d_faces = texture_data.get('valid_pixel_3d_faces')
     valid_pixel_b_coords = texture_data.get('valid_pixel_b_coords')
+    img_size = texture_data.get('img_size')
 
     pixel_3d_points = target_mesh.v[valid_pixel_3d_faces[:, 0], :] * valid_pixel_b_coords[:, 0][:, np.newaxis] + \
                       target_mesh.v[valid_pixel_3d_faces[:, 1], :] * valid_pixel_b_coords[:, 1][:, np.newaxis] + \
@@ -31,7 +32,7 @@ def compute_texture_map(source_img, target_mesh, target_scale, texture_data):
     proj_2d_points = np.round(target_scale*pixel_3d_points[:,:2], 0).astype(int)
     proj_2d_points[:, 1] = source_img.shape[0] - proj_2d_points[:, 1]
 
-    texture = np.zeros((512, 512, 3))
+    texture = np.zeros((img_size, img_size, 3))
     for i, (x, y) in enumerate(proj_2d_points):
         if n_dot_view[i] > 0.0:
             continue
