@@ -71,8 +71,11 @@ Download the FLAME model and the MPI texture space from [MPI-IS/FLAME](http://fl
 
 ### Demo
 
-We provide demos to i) draw random samples from FLAME to demonstrate how to edit the different FLAME parameters, ii) to fit FLAME to 3D landmarks, iii) to fit FLAME to a registered 3D mesh (i.e. in FLAME topology), and iv) to generate [VOCA](https://github.com/TimoBolkart/voca) templates.
-
+We provide demos to 
+i) draw random samples from FLAME to demonstrate how to edit the different FLAME parameters, 
+ii) to fit FLAME to 3D landmarks, 
+iii) to fit FLAME to a registered 3D mesh (i.e. in FLAME topology), and 
+iv) to generate [VOCA](https://github.com/TimoBolkart/voca) templates.
 
 ##### Sample FLAME
 
