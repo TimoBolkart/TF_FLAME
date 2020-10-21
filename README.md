@@ -142,17 +142,6 @@ python sample_FLAME.py --option sample_VOCA_template --model_fname './models/gen
 ```
 By default, running this demo uses an OpenGL-based mesh viewer viewer to visualize the samples. If this causes any problems, try running the demo with the additional flag --visualize False to disable the visualization.
 
-### Supported projects
-
-FLAME supports several projects such as
-* [GIF: Generative Interpretable Faces](https://github.com/ParthaEth/GIF)
-* [VOCA: Voice Operated Character Animation](https://github.com/TimoBolkart/voca)
-* [RingNet: 3D Face Shape and Expression Reconstruction from an Image without 3D Supervision](https://github.com/soubhiksanyal/RingNet)
-* [Expressive Body Capture: 3D Hands, Face, and Body from a Single Image](https://github.com/vchoutas/smplify-x)
-
-FLAME is part of SMPL-X
-* [SMPL-X: A new joint 3D model of the human body, face and hands together](https://github.com/vchoutas/smplx)
-
 
 ## License
 
@@ -173,6 +162,18 @@ When using this code in a scientific publication, please cite
   url = {https://doi.org/10.1145/3130800.3130813}
 }
 ```
+
+### Supported projects
+
+FLAME supports several projects such as
+* [GIF: Generative Interpretable Faces](https://github.com/ParthaEth/GIF)
+* [VOCA: Voice Operated Character Animation](https://github.com/TimoBolkart/voca)
+* [RingNet: 3D Face Shape and Expression Reconstruction from an Image without 3D Supervision](https://github.com/soubhiksanyal/RingNet)
+* [Expressive Body Capture: 3D Hands, Face, and Body from a Single Image](https://github.com/vchoutas/smplify-x)
+
+FLAME is part of SMPL-X
+* [SMPL-X: A new joint 3D model of the human body, face and hands together](https://github.com/vchoutas/smplx)
+
 
 ## Acknowledgement
 
