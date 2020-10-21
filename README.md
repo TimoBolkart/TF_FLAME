@@ -148,7 +148,7 @@ By default, running this demo uses an OpenGL-based mesh viewer viewer to visuali
 FLAME is available under [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/). By using the model or the code code, you acknowledge that you have read the license terms (https://flame.is.tue.mpg.de/modellicense), understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not use the code.
 
 
-### Citing
+## Citing
 
 When using this code in a scientific publication, please cite 
 ```
@@ -163,7 +163,7 @@ When using this code in a scientific publication, please cite
 }
 ```
 
-### Supported projects
+## Supported projects
 
 FLAME supports several projects such as
 * [GIF: Generative Interpretable Faces](https://github.com/ParthaEth/GIF)
