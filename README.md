@@ -124,7 +124,7 @@ Note that this demo to date does not support registering arbitrary 3D face scans
 
 ##### Sample texture space
 
-Two texture spaces are available for FLAME, the [MPI texture space](https://flame.is.tue.mpg.de/downloads) and [AlbedoMM](https://github.com/waps101/AlbedoMM). This demo generates FLAME meshes with textures randomly sampled from the MPI texture space (download [here](https://flame.is.tue.mpg.de/downloads))
+Three texture spaces are available for FLAME, the [MPI texture space](https://flame.is.tue.mpg.de/downloads), [AlbedoMM](https://github.com/waps101/AlbedoMM), and the [BFM color space](https://github.com/TimoBolkart/BFM_to_FLAME). This demo generates FLAME meshes with textures randomly sampled from the MPI texture space (download [here](https://flame.is.tue.mpg.de/downloads))
 ```
 python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/FLAME_texture.npz' --num_samples 5 --out_path './texture_samples_MPI'
 ```
