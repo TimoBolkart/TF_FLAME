@@ -39,13 +39,13 @@ $ git clone https://github.com/TimoBolkart/TF_FLAME.git
 Set up virtual environment:
 ```
 $ mkdir <your_home_dir>/.virtualenvs
-$ python3 -m venv <your_home_dir>/.virtualenvs/flame
+$ python3 -m venv <your_home_dir>/.virtualenvs/TF_FLAME
 ```
 
 Activate virtual environment:
 ```
 $ cd TF_FLAME
-$ source <your_home_dir>/flame/bin/activate
+$ source <your_home_dir>/.virtualenvs/TF_FLAME/bin/activate
 ```
 
 Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/mesh) within the virtual environment.
