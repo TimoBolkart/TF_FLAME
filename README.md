@@ -67,7 +67,7 @@ sudo apt-get install python-opengl
 
 ### Data
 
-Download the FLAME model and the MPI texture space from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data. Further, download the [FLAME_texture_data](http://files.is.tue.mpg.de/tbolkart/FLAME/FLAME_texture_data.zip) and unpack this into the data folder. If you want to use a statistical appearance texture space for FLAME, download either [AlbedoMM (CVPR 2020)](https://github.com/waps101/AlbedoMM) or the [FLAME texture space](https://flame.is.tue.mpg.de).<br/>
+Download the FLAME model and the MPI texture space from [MPI-IS/FLAME](https://flame.is.tue.mpg.de/downloads). You need to sign up and agree to the model license for access to the model and the data. Further, download the [FLAME_texture_data](http://files.is.tue.mpg.de/tbolkart/FLAME/FLAME_texture_data.zip) and unpack this into the data folder. If you want to use a statistical appearance texture space for FLAME, download either [AlbedoMM (CVPR 2020)](https://github.com/waps101/AlbedoMM) or the [FLAME texture space](https://flame.is.tue.mpg.de).<br/>
 
 ### Demo
 
