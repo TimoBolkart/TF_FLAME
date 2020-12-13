@@ -23,7 +23,7 @@ This repository demonstrates how to
 
 ### Set-up
 
-The has been tested with Python3.6, using Tensorflow 1.15.2.
+The code has been tested with Python3.6, using Tensorflow 1.15.2.
 
 Install pip and virtualenv
 
