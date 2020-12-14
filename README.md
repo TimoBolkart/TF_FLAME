@@ -4,9 +4,6 @@ This is an official Tensorflow-based [FLAME](http://flame.is.tue.mpg.de/) reposi
 
 We also provide [PyTorch FLAME](https://github.com/HavenFeng/photometric_optimization), a [Chumpy](https://github.com/mattloper/chumpy)-based [FLAME-fitting repository](https://github.com/Rubikplayer/flame-fitting), and code to [convert from Basel Face Model to FLAME](https://github.com/TimoBolkart/BFM_to_FLAME).
 
-
-We also provide [Tensorflow FLAME](https://github.com/TimoBolkart/TF_FLAME) and [PyTorch FLAME](https://github.com/HavenFeng/photometric_optimization) frameworks, and code to [convert from Basel Face Model to FLAME](https://github.com/TimoBolkart/BFM_to_FLAME).
-
 <p align="center"> 
 <img src="gifs/model_variations.gif">
 </p>
