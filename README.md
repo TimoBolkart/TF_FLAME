@@ -1,15 +1,24 @@
-## FLAME: Faces Learned with an Articulated Model and Expressions (TF)
+# FLAME: Articulated Expressive 3D Head Model (TF)
 
-[FLAME](http://flame.is.tue.mpg.de/) is a lightweight and expressive generic head model learned from over 33,000 of accurately aligned 3D scans. This repository provides sample Tensorflow code to experiment with the FLAME model. Parts of the repository are adapted from the [Chumpy](https://github.com/mattloper/chumpy)-based [FLAME-fitting repository](https://github.com/Rubikplayer/flame-fitting). 
+This is an official Tensorflow-based [FLAME](http://flame.is.tue.mpg.de/) repository. 
+
+We also provide [PyTorch FLAME](https://github.com/HavenFeng/photometric_optimization), a [Chumpy](https://github.com/mattloper/chumpy)-based [FLAME-fitting repository](https://github.com/Rubikplayer/flame-fitting), and code to [convert from Basel Face Model to FLAME](https://github.com/TimoBolkart/BFM_to_FLAME).
+
+
+We also provide [Tensorflow FLAME](https://github.com/TimoBolkart/TF_FLAME) and [PyTorch FLAME](https://github.com/HavenFeng/photometric_optimization) frameworks, and code to [convert from Basel Face Model to FLAME](https://github.com/TimoBolkart/BFM_to_FLAME).
 
 <p align="center"> 
 <img src="gifs/model_variations.gif">
 </p>
 
-FLAME combines a linear identity shape space (trained from 3800 scans of human heads) with an articulated neck, jaw, and eyeballs, pose-dependent corrective blendshapes, and additional global expression blendshapes. For details please about the model, please see the [scientific publication](https://ps.is.tuebingen.mpg.de/uploads_file/attachment/attachment/400/paper.pdf) and the [supplementary video](https://youtu.be/36rPTkhiJTM).
+FLAME is a lightweight and expressive generic head model learned from over 33,000 of accurately aligned 3D scans. FLAME combines a linear identity shape space (trained from head scans of 3800 subjects) with an articulated neck, jaw, and eyeballs, pose-dependent corrective blendshapes, and additional global expression blendshapes. For details please see the [scientific publication](https://ps.is.tuebingen.mpg.de/uploads_file/attachment/attachment/400/paper.pdf)
 
-See also [FLAME PyTorch](https://github.com/soubhiksanyal/FLAME_PyTorch) or the [FLAME photometric optimization](https://github.com/HavenFeng/photometric_optimization) repositories.
-
+```
+Learning a model of facial shape and expression from 4D scans
+Tianye Li*, Timo Bolkart*, Michael J. Black, Hao Li, and Javier Romero
+ACM Transactions on Graphics (Proc. SIGGRAPH Asia) 2017
+```
+and the [supplementary video](https://youtu.be/36rPTkhiJTM).
 
 ### Content
 
