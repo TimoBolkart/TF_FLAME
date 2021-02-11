@@ -148,22 +148,15 @@ python sample_FLAME.py --option sample_VOCA_template --model_fname './models/gen
 ```
 By default, running this demo uses an OpenGL-based mesh viewer viewer to visualize the samples. If this causes any problems, try running the demo with the additional flag --visualize False to disable the visualization.
 
-<<<<<<< HEAD
 ### Landmarks
 
 <p align="center"> 
 <img src="data/landmarks_51_annotated.png" width="50%">
 </p>
-=======
-
-## License
-
-FLAME is available under [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/). By using the model or the code code, you acknowledge that you have read the license terms (https://flame.is.tue.mpg.de/modellicense), understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not use the code.
->>>>>>> 80340b6eaa5f044000a366218c60b001815236f1
 
 The provided demos fit FLAME to 3D landmarks or to a scan, using 3D landmarks for initialization and during fitting. Both demos use the shown 51 landmarks. Providing the landmarks in the exact order is essential.
 
-## Citing
+### Citing
 
 When using this code in a scientific publication, please cite FLAME 
 ```
@@ -178,15 +171,11 @@ When using this code in a scientific publication, please cite FLAME
 }
 ```
 
-<<<<<<< HEAD
 ### License
 
 The FLAME model is under a Creative Commons Attribution license. By using this code, you acknowledge that you have read the terms and conditions (https://flame.is.tue.mpg.de/modellicense), understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not use the code. You further agree to cite the FLAME paper when reporting results with this model.
 
 ### Supported projects
-=======
-## Supported projects
->>>>>>> 80340b6eaa5f044000a366218c60b001815236f1
 
 FLAME supports several projects such as
 * [CoMA: Convolutional Mesh Autoencoders](https://github.com/anuragranj/coma)
