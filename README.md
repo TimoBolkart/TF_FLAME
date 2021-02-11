@@ -188,7 +188,7 @@ FLAME supports several projects such as
 
 FLAME is part of [SMPL-X: : A new joint 3D model of the human body, face and hands together](https://github.com/vchoutas/smplx)
 
-## Acknowledgement
+### Acknowledgement
 
 The Tensorflow implementation used in this project is adapted from [HMR](https://github.com/akanazawa/hmr). We thank Angjoo Kanazawa for making this code available.
 We thank Ahmed Osman for support with Tensorflow.
