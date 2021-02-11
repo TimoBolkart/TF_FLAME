@@ -154,7 +154,7 @@ By default, running this demo uses an OpenGL-based mesh viewer viewer to visuali
 <img src="data/landmarks_51_annotated.png" width="50%">
 </p>
 
-The provided demos fit FLAME to 3D landmarks or to a scan, using 3D landmarks for initialization and during fitting. Both demos use the shown 51 landmarks. Providing the landmarks in the exact order is essential.
+The provided demos fit FLAME to 3D landmarks or to a scan, using 3D landmarks for initialization and during fitting. Both demos use the shown 51 landmarks. Providing the landmarks in the exact order is essential. The landmarks can for instance be obtained with [MeshLab](https://www.meshlab.net/) using the PickPoints module. PickPoints outputs a .pp file containing the selected points. The .pp file can be loaded with the provided 'load_picked_points(fname)' function in utils/landmarks.py.
 
 ### Citing
 
