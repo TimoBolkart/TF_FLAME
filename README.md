@@ -1,15 +1,21 @@
-## FLAME: Faces Learned with an Articulated Model and Expressions (TF)
+# FLAME: Articulated Expressive 3D Head Model (TF)
 
-[FLAME](http://flame.is.tue.mpg.de/) is a lightweight and expressive generic head model learned from over 33,000 of accurately aligned 3D scans. This repository provides sample Tensorflow code to experiment with the FLAME model. Parts of the repository are adapted from the [Chumpy](https://github.com/mattloper/chumpy)-based [FLAME-fitting repository](https://github.com/Rubikplayer/flame-fitting). 
+This is an official Tensorflow-based [FLAME](http://flame.is.tue.mpg.de/) repository. 
+
+We also provide [PyTorch FLAME](https://github.com/HavenFeng/photometric_optimization), a [Chumpy](https://github.com/mattloper/chumpy)-based [FLAME-fitting repository](https://github.com/Rubikplayer/flame-fitting), and code to [convert from Basel Face Model to FLAME](https://github.com/TimoBolkart/BFM_to_FLAME).
 
 <p align="center"> 
 <img src="gifs/model_variations.gif">
 </p>
 
-FLAME combines a linear identity shape space (trained from 3800 scans of human heads) with an articulated neck, jaw, and eyeballs, pose-dependent corrective blendshapes, and additional global expression blendshapes. For details please about the model, please see the [scientific publication](https://ps.is.tuebingen.mpg.de/uploads_file/attachment/attachment/400/paper.pdf) and the [supplementary video](https://youtu.be/36rPTkhiJTM).
+FLAME is a lightweight and expressive generic head model learned from over 33,000 of accurately aligned 3D scans. FLAME combines a linear identity shape space (trained from head scans of 3800 subjects) with an articulated neck, jaw, and eyeballs, pose-dependent corrective blendshapes, and additional global expression blendshapes. For details please see the [scientific publication](https://ps.is.tuebingen.mpg.de/uploads_file/attachment/attachment/400/paper.pdf)
 
-See also [FLAME PyTorch](https://github.com/soubhiksanyal/FLAME_PyTorch) or the [FLAME photometric optimization](https://github.com/HavenFeng/photometric_optimization) repositories.
-
+```
+Learning a model of facial shape and expression from 4D scans
+Tianye Li*, Timo Bolkart*, Michael J. Black, Hao Li, and Javier Romero
+ACM Transactions on Graphics (Proc. SIGGRAPH Asia) 2017
+```
+and the [supplementary video](https://youtu.be/36rPTkhiJTM).
 
 ### Content
 
@@ -23,7 +29,7 @@ This repository demonstrates how to
 
 ### Set-up
 
-The has been tested with Python3.6, using Tensorflow 1.15.2.
+The code has been tested with Python3.6, using Tensorflow 1.15.2.
 
 Install pip and virtualenv
 
@@ -33,19 +39,19 @@ sudo apt-get install python3-pip python3-venv
 
 Clone the git project:
 ```
-$ git clone https://github.com/TimoBolkart/TF_FLAME.git
+git clone https://github.com/TimoBolkart/TF_FLAME.git
 ```
 
 Set up virtual environment:
 ```
-$ mkdir <your_home_dir>/.virtualenvs
-$ python3 -m venv <your_home_dir>/.virtualenvs/flame
+mkdir <your_home_dir>/.virtualenvs
+python3 -m venv <your_home_dir>/.virtualenvs/TF_FLAME
 ```
 
 Activate virtual environment:
 ```
-$ cd TF_FLAME
-$ source <your_home_dir>/flame/bin/activate
+cd TF_FLAME
+source <your_home_dir>/.virtualenvs/TF_FLAME/bin/activate
 ```
 
 Install mesh processing libraries from [MPI-IS/mesh](https://github.com/MPI-IS/mesh) within the virtual environment.
@@ -67,12 +73,15 @@ sudo apt-get install python-opengl
 
 ### Data
 
-Download the FLAME model and the MPI texture space from [MPI-IS/FLAME](http://flame.is.tue.mpg.de/). You need to sign up and agree to the model license for access to the model and the data. Further, download the [FLAME_texture_data](http://files.is.tue.mpg.de/tbolkart/FLAME/FLAME_texture_data.zip) and unpack this into the data folder. If you want to use a statistical appearance texture space for FLAME, download either [AlbedoMM (CVPR 2020)](https://github.com/waps101/AlbedoMM) or the [FLAME texture space](https://flame.is.tue.mpg.de).<br/>
+Download the FLAME model and the MPI texture space from [MPI-IS/FLAME](https://flame.is.tue.mpg.de/downloads). You need to sign up and agree to the model license for access to the model and the data. Further, download the [FLAME_texture_data](http://files.is.tue.mpg.de/tbolkart/FLAME/FLAME_texture_data.zip) and unpack this into the data folder. If you want to use a statistical appearance texture space for FLAME, download either [AlbedoMM (CVPR 2020)](https://github.com/waps101/AlbedoMM) or the [FLAME texture space](https://flame.is.tue.mpg.de).<br/>
 
 ### Demo
 
-We provide demos to i) draw random samples from FLAME to demonstrate how to edit the different FLAME parameters, ii) to fit FLAME to 3D landmarks, iii) to fit FLAME to a registered 3D mesh (i.e. in FLAME topology), and iv) to generate [VOCA](https://github.com/TimoBolkart/voca) templates.
-
+We provide demos to 
+i) draw random samples from FLAME to demonstrate how to edit the different FLAME parameters, 
+ii) to fit FLAME to 3D landmarks, 
+iii) to fit FLAME to a registered 3D mesh (i.e. in FLAME topology), and 
+iv) to generate [VOCA](https://github.com/TimoBolkart/voca) templates.
 
 ##### Sample FLAME
 
@@ -121,7 +130,7 @@ Note that this demo to date does not support registering arbitrary 3D face scans
 
 ##### Sample texture space
 
-Two texture spaces are available for FLAME, the [MPI texture space](https://flame.is.tue.mpg.de/downloads) and [AlbedoMM](https://github.com/waps101/AlbedoMM). This demo generates FLAME meshes with textures randomly sampled from the MPI texture space (download [here](https://flame.is.tue.mpg.de/downloads))
+Three texture spaces are available for FLAME, the [MPI texture space](https://flame.is.tue.mpg.de/downloads), [AlbedoMM](https://github.com/waps101/AlbedoMM), and the [BFM color space](https://github.com/TimoBolkart/BFM_to_FLAME). This demo generates FLAME meshes with textures randomly sampled from the MPI texture space (download [here](https://flame.is.tue.mpg.de/downloads))
 ```
 python sample_texture.py --model_fname './models/generic_model.pkl' --texture_fname './models/FLAME_texture.npz' --num_samples 5 --out_path './texture_samples_MPI'
 ```
@@ -139,15 +148,22 @@ python sample_FLAME.py --option sample_VOCA_template --model_fname './models/gen
 ```
 By default, running this demo uses an OpenGL-based mesh viewer viewer to visualize the samples. If this causes any problems, try running the demo with the additional flag --visualize False to disable the visualization.
 
+<<<<<<< HEAD
 ### Landmarks
 
 <p align="center"> 
 <img src="data/landmarks_51_annotated.png" width="50%">
 </p>
+=======
+
+## License
+
+FLAME is available under [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/). By using the model or the code code, you acknowledge that you have read the license terms (https://flame.is.tue.mpg.de/modellicense), understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not use the code.
+>>>>>>> 80340b6eaa5f044000a366218c60b001815236f1
 
 The provided demos fit FLAME to 3D landmarks or to a scan, using 3D landmarks for initialization and during fitting. Both demos use the shown 51 landmarks. Providing the landmarks in the exact order is essential.
 
-### Citing
+## Citing
 
 When using this code in a scientific publication, please cite FLAME 
 ```
@@ -162,11 +178,15 @@ When using this code in a scientific publication, please cite FLAME
 }
 ```
 
+<<<<<<< HEAD
 ### License
 
 The FLAME model is under a Creative Commons Attribution license. By using this code, you acknowledge that you have read the terms and conditions (https://flame.is.tue.mpg.de/modellicense), understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not use the code. You further agree to cite the FLAME paper when reporting results with this model.
 
 ### Supported projects
+=======
+## Supported projects
+>>>>>>> 80340b6eaa5f044000a366218c60b001815236f1
 
 FLAME supports several projects such as
 * [CoMA: Convolutional Mesh Autoencoders](https://github.com/anuragranj/coma)
