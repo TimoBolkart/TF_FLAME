@@ -65,3 +65,35 @@ def visualize_landmarks(img, lmks):
         text = '%d' % (i+1)
         textsize = cv2.getTextSize(text, font, 1, 2)[0]
         cv2.putText(img, text, (int(x-textsize[0]/2.0)+5, int(y)-5), font, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
+
+def load_picked_points(filename):
+    """
+    Load a picked points file (.pp) containing 3D points exported from MeshLab.
+    Returns a Numpy array of size Nx3
+    """
+
+    f = open(filename, 'r')
+
+    def get_num(string):
+        pos1 = string.find('\"')
+        pos2 = string.find('\"', pos1 + 1)
+        return float(string[pos1 + 1:pos2])
+
+    def get_point(str_array):
+        if 'x=' in str_array[0] and 'y=' in str_array[1] and 'z=' in str_array[2]:
+            return [get_num(str_array[0]), get_num(str_array[1]), get_num(str_array[2])]
+        else:
+            return []
+
+    pickedPoints = []
+    for line in f:
+        if 'point' in line:
+            str = line.split()
+            if len(str) < 4:
+                continue
+            ix = [i for i, s in enumerate(str) if 'x=' in s][0]
+            iy = [i for i, s in enumerate(str) if 'y=' in s][0]
+            iz = [i for i, s in enumerate(str) if 'z=' in s][0]
+            pickedPoints.append(get_point([str[ix], str[iy], str[iz]]))
+    f.close()
+    return np.array(pickedPoints)
