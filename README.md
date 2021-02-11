@@ -139,25 +139,17 @@ python sample_FLAME.py --option sample_VOCA_template --model_fname './models/gen
 ```
 By default, running this demo uses an OpenGL-based mesh viewer viewer to visualize the samples. If this causes any problems, try running the demo with the additional flag --visualize False to disable the visualization.
 
-### Supported projects
+### Landmarks
 
-FLAME supports several projects such as
-* [VOCA: Voice Operated Character Animation](https://github.com/TimoBolkart/voca)
-* [RingNet: 3D Face Shape and Expression Reconstruction from an Image without 3D Supervision](https://github.com/soubhiksanyal/RingNet)
-* [Expressive Body Capture: 3D Hands, Face, and Body from a Single Image](https://github.com/vchoutas/smplify-x)
+<p align="center"> 
+<img src="data/landmarks_51_annotated.png" width="50%">
+</p>
 
-FLAME is part of SMPL-X
-* [SMPL-X: A new joint 3D model of the human body, face and hands together](https://github.com/vchoutas/smplx)
-
-
-## License
-
-FLAME is available under [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/). By using the model or the code code, you acknowledge that you have read the license terms (http://flame.is.tue.mpg.de/model_license), understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not use the code.
-
+The provided demos fit FLAME to 3D landmarks or to a scan, using 3D landmarks for initialization and during fitting. Both demos use the shown 51 landmarks. Providing the landmarks in the exact order is essential.
 
 ### Citing
 
-When using this code in a scientific publication, please cite 
+When using this code in a scientific publication, please cite FLAME 
 ```
 @article{FLAME:SiggraphAsia2017,
   title = {Learning a model of facial shape and expression from {4D} scans},
@@ -169,6 +161,23 @@ When using this code in a scientific publication, please cite
   url = {https://doi.org/10.1145/3130800.3130813}
 }
 ```
+
+### License
+
+The FLAME model is under a Creative Commons Attribution license. By using this code, you acknowledge that you have read the terms and conditions (https://flame.is.tue.mpg.de/modellicense), understand them, and agree to be bound by them. If you do not agree with these terms and conditions, you must not use the code. You further agree to cite the FLAME paper when reporting results with this model.
+
+### Supported projects
+
+FLAME supports several projects such as
+* [CoMA: Convolutional Mesh Autoencoders](https://github.com/anuragranj/coma)
+* [RingNet: 3D Face Shape and Expression Reconstruction from an Image without 3D Supervision](https://github.com/soubhiksanyal/RingNet)
+* [VOCA: Voice Operated Character Animation](https://github.com/TimoBolkart/voca)
+* [Expressive Body Capture: 3D Hands, Face, and Body from a Single Image](https://github.com/vchoutas/smplify-x)
+* [ExPose: Monocular Expressive Body Regression through Body-Driven Attention](https://github.com/vchoutas/expose)
+* [GIF: Generative Interpretable Faces](https://github.com/ParthaEth/GIF)
+* [DECA: Detailed Expression Capture and Animation](https://github.com/YadiraF/DECA)
+
+FLAME is part of [SMPL-X: : A new joint 3D model of the human body, face and hands together](https://github.com/vchoutas/smplx)
 
 ## Acknowledgement
 
