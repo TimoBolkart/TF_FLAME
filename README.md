@@ -87,7 +87,7 @@ iv) to generate [VOCA](https://github.com/TimoBolkart/voca) templates.
 
 This demo introduces the different FLAME parameters (i.e. pose, shape, expression, and global transformation) of the FLAME model by generating random sample meshes. Please note that this does not demonstrate how to get realistic 3D face samples from the model.
 ```
-python sample_FLAME.py --option sample_FLAME --model_fname './models/generic_model.pkl' --num_samples 5 --out_path './FLAME_samples'
+python3.7 sample_FLAME.py --option sample_FLAME --model_fname './models/generic_model.pkl' --num_samples 5 --out_path './FLAME_samples'
 ```
 By default, running this demo uses an OpenGL-based mesh viewer viewer to visualize the samples. If this causes any problems, try running the demo with the additional flag --visualize False to disable the visualization.
 
@@ -95,8 +95,8 @@ By default, running this demo uses an OpenGL-based mesh viewer viewer to visuali
 
 This demo demonstrates how to fit FLAME to 2D landmarks. Corresponding 2D landmarks can for instance be automatically predicted using [2D-FAN Torch](https://github.com/1adrianb/2D-and-3D-face-alignment) or [2D-FAN Pytorch](https://github.com/1adrianb/face-alignment). (The test images are taken from CelebA-HQ) 
 ```
-python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data_512.npy' --target_img_path './data/imgHQ00088.jpeg' --target_lmk_path './data/imgHQ00088_lmks.npy' --out_path './results'
-python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data_512.npy' --target_img_path './data/imgHQ00095.jpeg' --target_lmk_path './data/imgHQ00095_lmks.npy' --out_path './results'
+python3.7 fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data_512.npy' --target_img_path './data/imgHQ00088.jpeg' --target_lmk_path './data/imgHQ00088_lmks.npy' --out_path './results'
+python3.7 fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data_512.npy' --target_img_path './data/imgHQ00095.jpeg' --target_lmk_path './data/imgHQ00095_lmks.npy' --out_path './results'
 python fit_2D_landmarks.py --model_fname './models/male_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data_512.npy' --target_img_path './data/imgHQ00039.jpeg' --target_lmk_path './data/imgHQ00039_lmks.npy' --out_path './results'
 python fit_2D_landmarks.py --model_fname './models/female_model.pkl' --flame_lmk_path './data/flame_static_embedding.pkl' --texture_mapping './data/texture_data_512.npy' --target_img_path './data/imgHQ01148.jpeg' --target_lmk_path './data/imgHQ01148_lmks.npy' --out_path './results'
 ```
