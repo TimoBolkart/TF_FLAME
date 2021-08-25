@@ -1,6 +1,6 @@
 numpy==1.16.4
 scipy==1.2.2
-tensorflow-gpu==1.15.2
+tensorflow-gpu==2.5.1
 ipython
 opencv-python==4.1.1.26
 pyrender==0.1.33
