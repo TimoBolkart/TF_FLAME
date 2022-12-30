@@ -177,6 +177,8 @@ The FLAME model is under a Creative Commons Attribution license. By using this c
 
 ### Supported projects
 
+Visit the [FLAME-Universe](https://github.com/TimoBolkart/FLAME-Universe) for an overview of FLAME-based projects. 
+
 FLAME supports several projects such as
 * [CoMA: Convolutional Mesh Autoencoders](https://github.com/anuragranj/coma)
 * [RingNet: 3D Face Shape and Expression Reconstruction from an Image without 3D Supervision](https://github.com/soubhiksanyal/RingNet)
