@@ -5,4 +5,5 @@ ipython
 opencv-python==4.1.1.26
 pyrender==0.1.33
 trimesh==3.5.15
-chumpy==0.69
+chumpy==0.70
+https://github.com/MPI-IS/mesh/releases/download/v0.4/psbody_mesh-0.4-cp37-cp37m-linux_x86_64.whl
